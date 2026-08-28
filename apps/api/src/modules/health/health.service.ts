@@ -2,6 +2,7 @@ import { Injectable, ServiceUnavailableException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
 import { getCurrentTimestamp } from '../../common/utils/date.util';
+import { RedisService } from '../jobs/redis.service';
 import { ObservabilityHealthService } from '../observability/health.service';
 
 @Injectable()
@@ -9,6 +10,7 @@ export class HealthService {
   constructor(
     private readonly configService: ConfigService,
     private readonly observabilityHealthService: ObservabilityHealthService,
+    private readonly redisService: RedisService,
   ) {}
 
   getHealthStatus() {
@@ -37,16 +39,20 @@ export class HealthService {
   }
 
   async getReadinessStatus() {
-    const database = await this.observabilityHealthService.getDatabaseHealth();
-    const aiRuntime = await this.observabilityHealthService.getAiRuntimeHealth();
-    const connectors = await this.observabilityHealthService.getConnectorHealth();
+    const [database, redis, aiRuntime, connectors] = await Promise.all([
+      this.observabilityHealthService.getDatabaseHealth(),
+      this.checkRedisHealth(),
+      this.observabilityHealthService.getAiRuntimeHealth(),
+      this.observabilityHealthService.getConnectorHealth(),
+    ]);
 
-    if (database.status === 'UNHEALTHY') {
+    if (database.status === 'UNHEALTHY' || redis.status === 'UNHEALTHY') {
       throw new ServiceUnavailableException({
         code: 'PLATFORM_NOT_READY',
         message: 'Platform dependencies are not ready.',
         details: {
           database: database.status.toLowerCase(),
+          redis: redis.status.toLowerCase(),
           aiRuntime: aiRuntime.status.toLowerCase(),
           connectors: connectors.status.toLowerCase(),
         },
@@ -60,6 +66,7 @@ export class HealthService {
         status: 'ready',
         dependencies: {
           database: database.status.toLowerCase(),
+          redis: redis.status.toLowerCase(),
           aiRuntime: aiRuntime.status.toLowerCase(),
           connectors: connectors.status.toLowerCase(),
         },
@@ -70,28 +77,41 @@ export class HealthService {
 
   async getDatabaseHealth() {
     const data = await this.observabilityHealthService.getDatabaseHealth();
+    return { message: 'Database health retrieved successfully.', data };
+  }
 
-    return {
-      message: 'Database health retrieved successfully.',
-      data,
-    };
+  async getRedisHealth() {
+    const data = await this.checkRedisHealth();
+    return { message: 'Redis health retrieved successfully.', data };
   }
 
   async getAiRuntimeHealth() {
     const data = await this.observabilityHealthService.getAiRuntimeHealth();
-
-    return {
-      message: 'AI runtime health retrieved successfully.',
-      data,
-    };
+    return { message: 'AI runtime health retrieved successfully.', data };
   }
 
   async getConnectorsHealth() {
     const data = await this.observabilityHealthService.getConnectorHealth();
+    return { message: 'Connector health retrieved successfully.', data };
+  }
 
-    return {
-      message: 'Connector health retrieved successfully.',
-      data,
-    };
+  private async checkRedisHealth() {
+    const startedAt = Date.now();
+    try {
+      await this.redisService.ping();
+      return {
+        dependency: 'redis',
+        status: 'HEALTHY' as const,
+        latencyMs: Date.now() - startedAt,
+        checkedAt: getCurrentTimestamp(),
+      };
+    } catch {
+      return {
+        dependency: 'redis',
+        status: 'UNHEALTHY' as const,
+        latencyMs: Date.now() - startedAt,
+        checkedAt: getCurrentTimestamp(),
+      };
+    }
   }
 }

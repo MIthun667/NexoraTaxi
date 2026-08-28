@@ -1,71 +1,62 @@
+import { createHash } from 'node:crypto';
+
 import {
   HttpException,
   HttpStatus,
   Injectable,
   Logger,
   NestMiddleware,
+  ServiceUnavailableException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NextFunction, Request, Response } from 'express';
 
-type RateLimitEntry = {
-  count: number;
-  resetAt: number;
-};
+import { RedisService } from '../../modules/jobs/redis.service';
 
 @Injectable()
 export class AuthRateLimitMiddleware implements NestMiddleware {
-  private readonly entries = new Map<string, RateLimitEntry>();
   private readonly logger = new Logger(AuthRateLimitMiddleware.name);
 
-  constructor(private readonly configService: ConfigService) {
-    if (this.configService.get<string>('environment.nodeEnv') === 'production') {
-      this.logger.warn(
-        'Authentication rate limiting is process-local. Multi-instance deployments must enforce a distributed or edge rate limit in front of the API.',
-      );
-    }
-  }
+  constructor(
+    private readonly configService: ConfigService,
+    private readonly redisService: RedisService,
+  ) {}
 
-  use(request: Request, response: Response, next: NextFunction) {
+  async use(request: Request, response: Response, next: NextFunction) {
     const ttlSeconds = this.configService.get<number>('environment.authRateLimitTtl', 60);
     const limit = this.configService.get<number>('environment.authRateLimitLimit', 10);
-    const key = `${request.method}:${request.baseUrl}${request.path}:${request.ip}`;
-    const now = Date.now();
+    const nodeEnv = this.configService.get<string>('environment.nodeEnv', 'development');
+    const identity = `${request.method}:${request.baseUrl}${request.path}:${request.ip ?? 'unknown'}`;
+    const keyHash = createHash('sha256').update(identity).digest('hex');
+    const key = `nexora:${nodeEnv}:auth-rate-limit:${keyHash}`;
 
-    this.cleanup(now);
+    try {
+      const { count, ttl } = await this.redisService.incrementWithTtl(key, ttlSeconds);
 
-    const current = this.entries.get(key);
+      if (count > limit) {
+        response.setHeader('Retry-After', String(Math.max(ttl, 1)));
+        next(
+          new HttpException(
+            'Too many authentication requests were received. Please try again shortly.',
+            HttpStatus.TOO_MANY_REQUESTS,
+          ),
+        );
+        return;
+      }
 
-    if (!current || current.resetAt <= now) {
-      this.entries.set(key, {
-        count: 1,
-        resetAt: now + ttlSeconds * 1000,
-      });
       next();
-      return;
-    }
+    } catch (error) {
+      if (error instanceof HttpException) {
+        next(error);
+        return;
+      }
 
-    if (current.count >= limit) {
-      response.setHeader('Retry-After', String(Math.ceil((current.resetAt - now) / 1000)));
+      this.logger.error('Redis-backed authentication rate limiting is unavailable.');
       next(
-        new HttpException(
-          'Too many authentication requests were received. Please try again shortly.',
-          HttpStatus.TOO_MANY_REQUESTS,
+        new ServiceUnavailableException(
+          'Authentication is temporarily unavailable because request protection is not ready.',
         ),
       );
-      return;
-    }
-
-    current.count += 1;
-    this.entries.set(key, current);
-    next();
-  }
-
-  private cleanup(now: number) {
-    for (const [key, value] of this.entries.entries()) {
-      if (value.resetAt <= now) {
-        this.entries.delete(key);
-      }
     }
   }
 }

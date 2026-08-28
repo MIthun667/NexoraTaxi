@@ -30,6 +30,11 @@ export class HealthController {
     return this.healthService.getDatabaseHealth();
   }
 
+  @Get('redis')
+  getRedisHealth() {
+    return this.healthService.getRedisHealth();
+  }
+
   @Get('ai-runtime')
   getAiRuntimeHealth() {
     return this.healthService.getAiRuntimeHealth();

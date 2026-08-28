@@ -7,6 +7,11 @@ services:
       TRUST_PROXY: 'true'
       RUN_MIGRATIONS_ON_BOOT: 'true'
       DATABASE_URL: ${DATABASE_URL}
+      REDIS_URL: ${REDIS_URL:-redis://redis:6379}
+      JOB_QUEUE_PREFIX: ${JOB_QUEUE_PREFIX:-nexora-staging}
+      JOB_DEFAULT_ATTEMPTS: ${JOB_DEFAULT_ATTEMPTS:-3}
+      JOB_BACKOFF_MS: ${JOB_BACKOFF_MS:-1000}
+      WORKER_CONCURRENCY: ${WORKER_CONCURRENCY:-5}
       JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET}
       JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET}
       ENCRYPTION_KEY: ${ENCRYPTION_KEY}
@@ -20,7 +25,8 @@ services:
       OLLAMA_MODEL: ${OLLAMA_MODEL:-qwen2.5:7b-instruct}
       CORS_ORIGINS: ${CORS_ORIGINS}
     depends_on:
-      - redis
+      redis:
+        condition: service_healthy
     restart: unless-stopped
 
   worker:
@@ -28,6 +34,11 @@ services:
     environment:
       NODE_ENV: production
       DATABASE_URL: ${DATABASE_URL}
+      REDIS_URL: ${REDIS_URL:-redis://redis:6379}
+      JOB_QUEUE_PREFIX: ${JOB_QUEUE_PREFIX:-nexora-staging}
+      JOB_DEFAULT_ATTEMPTS: ${JOB_DEFAULT_ATTEMPTS:-3}
+      JOB_BACKOFF_MS: ${JOB_BACKOFF_MS:-1000}
+      WORKER_CONCURRENCY: ${WORKER_CONCURRENCY:-5}
       JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET}
       JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET}
       ENCRYPTION_KEY: ${ENCRYPTION_KEY}
@@ -39,7 +50,11 @@ services:
       SHOPIFY_WEBHOOK_BASE_URL: ${SHOPIFY_WEBHOOK_BASE_URL}
       OLLAMA_BASE_URL: ${OLLAMA_BASE_URL}
       OLLAMA_MODEL: ${OLLAMA_MODEL:-qwen2.5:7b-instruct}
+    depends_on:
+      redis:
+        condition: service_healthy
     restart: unless-stopped
+    stop_grace_period: 60s
 
   web:
     image: ghcr.io/nexora/ai-ceo-web:${IMAGE_TAG:-latest}
@@ -51,3 +66,8 @@ services:
   redis:
     image: redis:7-alpine
     restart: unless-stopped
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 5s
+      timeout: 3s
+      retries: 10

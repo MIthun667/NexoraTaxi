@@ -20,9 +20,12 @@ export const validationSchema = Joi.object({
     'any.invalid': 'JWT_REFRESH_SECRET must be different from JWT_ACCESS_SECRET',
   }),
   ENCRYPTION_KEY: Joi.string().min(32).required(),
-  NODE_ENV: Joi.string()
-    .valid('development', 'test', 'production')
-    .default('development'),
+  NODE_ENV: Joi.string().valid('development', 'test', 'production').default('development'),
+  REDIS_URL: Joi.string().uri({ scheme: ['redis', 'rediss'] }).default('redis://127.0.0.1:6379'),
+  JOB_QUEUE_PREFIX: Joi.string().trim().pattern(/^[A-Za-z0-9._-]+(?::[A-Za-z0-9._-]+)*$/).default('nexora'),
+  JOB_DEFAULT_ATTEMPTS: Joi.number().integer().min(1).max(10).default(3),
+  JOB_BACKOFF_MS: Joi.number().integer().min(100).max(300000).default(1000),
+  WORKER_CONCURRENCY: Joi.number().integer().min(1).max(100).default(5),
   OLLAMA_BASE_URL: Joi.string().uri({ scheme: ['http', 'https'] }).default('http://localhost:11434'),
   OLLAMA_HEALTHCHECK_ENABLED: Joi.boolean().truthy('true').falsy('false').default(true),
   OLLAMA_MAX_RETRIES: Joi.number().integer().min(0).max(5).default(2),

@@ -21,6 +21,13 @@ spec:
           envFrom:
             - secretRef:
                 name: nexora-api-secrets
+          env:
+            - name: JOB_QUEUE_PREFIX
+              value: nexora
+            - name: JOB_DEFAULT_ATTEMPTS
+              value: '3'
+            - name: JOB_BACKOFF_MS
+              value: '1000'
           readinessProbe:
             httpGet:
               path: /api/v1/health/readiness

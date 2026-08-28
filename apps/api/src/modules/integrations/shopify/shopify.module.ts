@@ -2,6 +2,7 @@ import { forwardRef, Module } from '@nestjs/common';
 
 import { AuditModule } from '../../audit/audit.module';
 import { IntelligenceModule } from '../../intelligence/intelligence.module';
+import { JobsModule } from '../../jobs/jobs.module';
 import { PrismaModule } from '../../../prisma/prisma.module';
 import { ShopifyApiService } from './shopify-api.service';
 import { ShopifyAuthService } from './shopify-auth.service';
@@ -17,7 +18,7 @@ import { ShopifyWebhookService } from './shopify-webhook.service';
 import { ShopifyWebhookValidatorService } from './shopify-webhook-validator.service';
 
 @Module({
-  imports: [PrismaModule, AuditModule, forwardRef(() => IntelligenceModule)],
+  imports: [PrismaModule, AuditModule, JobsModule, forwardRef(() => IntelligenceModule)],
   controllers: [ShopifyController, ShopifySyncController, ShopifyWebhookController],
   providers: [
     ShopifyAuthService,
