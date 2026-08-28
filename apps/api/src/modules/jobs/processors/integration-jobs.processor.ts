@@ -1,8 +1,10 @@
 import { OnWorkerEvent, Processor, WorkerHost } from '@nestjs/bullmq';
+import { Prisma } from '@prisma/client';
 import { Job, UnrecoverableError } from 'bullmq';
 
 import { PlatformLoggerService } from '../../../common/services/platform-logger.service';
 import { PrismaService } from '../../../prisma/prisma.service';
+import { AuditService } from '../../audit/audit.service';
 import { ShopifySyncService } from '../../integrations/shopify/shopify-sync.service';
 import { assertShopifyInitialSyncEnvelope } from '../job.contracts';
 import { JOB_NAMES, JOB_QUEUE_NAMES } from '../job.constants';
@@ -19,6 +21,7 @@ export class IntegrationJobsProcessor extends WorkerHost {
     private readonly prismaService: PrismaService,
     private readonly shopifySyncService: ShopifySyncService,
     private readonly jobsService: JobsService,
+    private readonly auditService: AuditService,
     private readonly logger: PlatformLoggerService,
   ) {
     super();
@@ -44,17 +47,46 @@ export class IntegrationJobsProcessor extends WorkerHost {
         organizationId: envelope.organizationId,
         isActive: true,
       },
-      select: { id: true, organizationId: true },
+      select: { id: true, organizationId: true, shopDomain: true },
     });
 
     if (!store || envelope.resourceId !== store.id) {
       throw new UnrecoverableError('Shopify job resource does not belong to the requested organization.');
     }
 
+    await this.auditService.record({
+      action: 'integration.shopify.initial_sync.started',
+      entityType: 'integration-shopify-store',
+      entityId: store.id,
+      organizationId: store.organizationId,
+      actorUserId: envelope.requestedByUserId,
+      summary: `Initial Shopify synchronization started for ${store.shopDomain}.`,
+      metadata: {
+        jobId: String(job.id),
+        correlationId: envelope.correlationId,
+        attempt: job.attemptsMade + 1,
+      } as Prisma.InputJsonValue,
+    });
+
     const result = await this.shopifySyncService.syncAllSystem(
       envelope.organizationId,
       envelope.payload.limit,
     );
+
+    await this.auditService.record({
+      action: 'integration.shopify.initial_sync.completed',
+      entityType: 'integration-shopify-store',
+      entityId: store.id,
+      organizationId: store.organizationId,
+      actorUserId: envelope.requestedByUserId,
+      summary: `Initial Shopify synchronization completed for ${store.shopDomain}.`,
+      metadata: {
+        jobId: String(job.id),
+        correlationId: envelope.correlationId,
+        syncRunId: result.data.id,
+        syncStatus: result.data.status,
+      } as Prisma.InputJsonValue,
+    });
 
     return {
       organizationId: envelope.organizationId,
@@ -101,7 +133,12 @@ export class IntegrationJobsProcessor extends WorkerHost {
       return;
     }
 
-    const data = job.data as { organizationId?: string; correlationId?: string };
+    const data = job.data as {
+      organizationId?: string;
+      correlationId?: string;
+      requestedByUserId?: string;
+      resourceId?: string;
+    };
     const maxAttempts = Number(job.opts.attempts ?? 1);
     const isFinalFailure = error.name === 'UnrecoverableError' || job.attemptsMade >= maxAttempts;
 
@@ -120,6 +157,22 @@ export class IntegrationJobsProcessor extends WorkerHost {
 
     if (isFinalFailure) {
       await this.jobsService.recordFinalFailure(job, JOB_QUEUE_NAMES.integration, error);
+      if (data.organizationId && data.resourceId) {
+        await this.auditService.record({
+          action: 'integration.shopify.initial_sync.failed',
+          entityType: 'integration-shopify-store',
+          entityId: data.resourceId,
+          organizationId: data.organizationId,
+          actorUserId: data.requestedByUserId,
+          summary: 'Initial Shopify synchronization failed after the configured retry policy.',
+          metadata: {
+            jobId: String(job.id),
+            correlationId: data.correlationId,
+            attemptCount: job.attemptsMade,
+            errorName: error.name,
+          } as Prisma.InputJsonValue,
+        });
+      }
     }
   }
 }
