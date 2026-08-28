@@ -31,7 +31,7 @@ type WorkforceExtensionPopulationOptions = {
   now?: Date;
 };
 
-type CompatibilityMetadata = Record<string, unknown> | null;
+type CompatibilityMetadata = Prisma.JsonObject | null;
 
 type CompatibilitySource = {
   joinedAt: Date | null;
@@ -57,7 +57,7 @@ const deterministicPopulationUuid = (seed: string): string => {
 };
 
 const asObject = (value: Prisma.JsonValue | null): CompatibilityMetadata =>
-  value && typeof value === 'object' && !Array.isArray(value) ? (value as Record<string, unknown>) : null;
+  value && typeof value === 'object' && !Array.isArray(value) ? (value as Prisma.JsonObject) : null;
 
 const readNullableString = (metadata: CompatibilityMetadata, key: string): string | null => {
   const value = metadata?.[key];
