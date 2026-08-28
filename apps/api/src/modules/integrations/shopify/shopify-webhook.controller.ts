@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Query, Req } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, Post, Query, Req } from '@nestjs/common';
 import { Request } from 'express';
 
 import { PlatformPermissions } from '../../../common/constants/platform-permissions.constants';
@@ -32,9 +32,15 @@ export class ShopifyWebhookController {
   @Post()
   @Public()
   receive(@Req() request: RawBodyRequest) {
+    if (!request.rawBody) {
+      throw new BadRequestException(
+        'Shopify webhook raw body is required for signature verification.',
+      );
+    }
+
     return this.webhookService.processWebhookDelivery({
       headers: request.headers as Record<string, string | string[] | undefined>,
-      rawBody: request.rawBody ?? Buffer.from(JSON.stringify(request.body ?? {})),
+      rawBody: request.rawBody,
     });
   }
 
