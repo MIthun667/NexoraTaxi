@@ -30,7 +30,11 @@
     "prisma:format": "prisma format",
     "db:seed": "prisma db seed",
     "db:standardize-passwords": "npx ts-node --transpile-only scripts/dev/tools/standardize-dev-password.ts",
-    "db:backfill-universal": "npx ts-node --transpile-only scripts/migrations/manual/backfill-universal-operational-layer.ts"
+    "db:backfill-universal": "npx ts-node --transpile-only scripts/migrations/manual/backfill-universal-operational-layer.ts",
+    "test": "pnpm test:unit && pnpm test:integration",
+    "test:unit": "node --test -r ts-node/register -r tsconfig-paths/register apps/api/test/security/*.unit.test.ts",
+    "test:integration": "node --test -r ts-node/register -r tsconfig-paths/register apps/api/test/security/*.integration.test.ts",
+    "test:ci": "pnpm test"
   },
   "prisma": {
     "seed": "node prisma/seed-runner.cjs"
