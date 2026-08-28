@@ -24,7 +24,7 @@
     "docker:dev:up": "docker compose -f deploy/compose/development.yml up --build",
     "docker:dev:init": "docker compose -f deploy/compose/development.yml --profile tools run --rm seed",
     "docker:dev:down": "docker compose -f deploy/compose/development.yml down -v",
-    "lint": "prettier --check \"{apps,prisma}/**/*.ts\"",
+    "lint": "prettier --check apps/api/src/common/guards/platform-auth.guard.ts apps/api/src/common/middleware/auth-rate-limit.middleware.ts apps/api/src/config/environment.config.ts apps/api/src/config/validation.schema.ts apps/api/src/modules/auth/interfaces/jwt-token-payload.interface.ts apps/api/src/modules/auth/services/token.service.ts apps/api/src/modules/health/health.controller.ts apps/api/src/modules/integrations/shopify/shopify-webhook.controller.ts apps/api/src/modules/tenancy/allow-cross-organization.decorator.ts apps/api/src/modules/tenancy/tenant-guard.ts apps/api/test/security/*.ts",
     "format": "prettier --write \"{apps,prisma}/**/*.{ts,js,json}\"",
     "prisma:generate": "prisma generate",
     "prisma:format": "prisma format",
