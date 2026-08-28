@@ -1,4 +1,4 @@
-import assert from 'node:assert/strict';
+import * as assert from 'node:assert/strict';
 import { test } from 'node:test';
 
 import { ExecutionContext, ForbiddenException } from '@nestjs/common';
@@ -60,53 +60,31 @@ function createGuard(activeOrganizations: string[] = ['org-a', 'org-b']) {
 
 test('same-tenant organization-scoped read is allowed', async () => {
   const { guard, checkedOrganizations } = createGuard();
-  const request = {
-    principal,
-    params: {},
-    query: { organizationId: 'org-a' },
-    body: undefined,
-  } as Partial<Request>;
-
+  const request = { principal, params: {}, query: { organizationId: 'org-a' }, body: undefined } as Partial<Request>;
   assert.equal(await guard.canActivate(createContext(request)), true);
   assert.deepEqual(checkedOrganizations, ['org-a']);
 });
 
 test('cross-tenant organization-scoped read is denied', async () => {
   const { guard } = createGuard();
-  const request = {
-    principal,
-    params: {},
-    query: { organizationId: 'org-b' },
-    body: undefined,
-  } as Partial<Request>;
-
+  const request = { principal, params: {}, query: { organizationId: 'org-b' }, body: undefined } as Partial<Request>;
   await assert.rejects(guard.canActivate(createContext(request)), ForbiddenException);
 });
 
 test('cross-tenant organization-scoped mutation is denied', async () => {
   const { guard } = createGuard();
-  const request = {
-    principal,
-    params: {},
-    query: {},
-    body: { organizationId: 'org-b', limit: 50 },
-  } as Partial<Request>;
-
+  const request = { principal, params: {}, query: {}, body: { organizationId: 'org-b', limit: 50 } } as Partial<Request>;
   await assert.rejects(guard.canActivate(createContext(request)), ForbiddenException);
 });
 
 test('cross-organization exception requires explicit route opt-in and dedicated permission', async () => {
   const { guard, checkedOrganizations } = createGuard();
   const request = {
-    principal: {
-      ...principal,
-      permissions: [CROSS_ORGANIZATION_PERMISSION],
-    },
+    principal: { ...principal, permissions: [CROSS_ORGANIZATION_PERMISSION] },
     params: {},
     query: { organizationId: 'org-b' },
     body: undefined,
   } as Partial<Request>;
-
   assert.equal(await guard.canActivate(createContext(request, true)), true);
   assert.deepEqual(checkedOrganizations, ['org-b']);
 });
@@ -114,14 +92,10 @@ test('cross-organization exception requires explicit route opt-in and dedicated 
 test('dedicated cross-organization permission alone does not bypass tenant scope', async () => {
   const { guard } = createGuard();
   const request = {
-    principal: {
-      ...principal,
-      permissions: [CROSS_ORGANIZATION_PERMISSION],
-    },
+    principal: { ...principal, permissions: [CROSS_ORGANIZATION_PERMISSION] },
     params: {},
     query: { organizationId: 'org-b' },
     body: undefined,
   } as Partial<Request>;
-
   await assert.rejects(guard.canActivate(createContext(request)), ForbiddenException);
 });
