@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { createHmac } from 'node:crypto';
-import test from 'node:test';
+import { test } from 'node:test';
 
 import { BadRequestException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
