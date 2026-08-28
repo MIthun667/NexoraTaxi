@@ -1,4 +1,4 @@
-import assert from 'node:assert/strict';
+import * as assert from 'node:assert/strict';
 import { after, before, test } from 'node:test';
 
 import { Controller, Get, INestApplication } from '@nestjs/common';
@@ -18,20 +18,14 @@ import { RbacService } from '../../src/modules/authz/rbac.service';
 class SecurityTestController {
   @Get('public')
   @Public()
-  publicRoute() {
-    return { ok: true };
-  }
+  publicRoute() { return { ok: true }; }
 
   @Get('protected')
-  protectedRoute() {
-    return { ok: true };
-  }
+  protectedRoute() { return { ok: true }; }
 
   @Get('permission')
   @Permissions('resource.read')
-  permissionRoute() {
-    return { ok: true };
-  }
+  permissionRoute() { return { ok: true }; }
 }
 
 const allowedPrincipal: CurrentPrincipal = {
@@ -41,7 +35,6 @@ const allowedPrincipal: CurrentPrincipal = {
   roles: ['member'],
   permissions: ['resource.read'],
 };
-
 const deniedPrincipal: CurrentPrincipal = {
   ...allowedPrincipal,
   userId: 'denied-user',
@@ -60,12 +53,8 @@ before(async () => {
         provide: ConfigService,
         useValue: {
           get: (key: string, fallback?: unknown) => {
-            if (key === 'environment.nodeEnv') {
-              return 'production';
-            }
-            if (key === 'environment.devAuthUserEmail') {
-              return undefined;
-            }
+            if (key === 'environment.nodeEnv') return 'production';
+            if (key === 'environment.devAuthUserEmail') return undefined;
             return fallback;
           },
         },
@@ -75,18 +64,10 @@ before(async () => {
         useValue: {
           verifyAccessToken: async (token: string) => {
             if (token === 'allowed') {
-              return {
-                userId: allowedPrincipal.userId,
-                email: allowedPrincipal.email,
-                organizationId: allowedPrincipal.organizationId,
-              };
+              return { userId: allowedPrincipal.userId, email: allowedPrincipal.email, organizationId: allowedPrincipal.organizationId };
             }
             if (token === 'denied') {
-              return {
-                userId: deniedPrincipal.userId,
-                email: deniedPrincipal.email,
-                organizationId: deniedPrincipal.organizationId,
-              };
+              return { userId: deniedPrincipal.userId, email: deniedPrincipal.email, organizationId: deniedPrincipal.organizationId };
             }
             throw new Error('invalid token');
           },
@@ -99,14 +80,8 @@ before(async () => {
             userId === deniedPrincipal.userId ? deniedPrincipal : allowedPrincipal,
         },
       },
-      {
-        provide: APP_GUARD,
-        useClass: PlatformAuthGuard,
-      },
-      {
-        provide: APP_GUARD,
-        useClass: PermissionsGuard,
-      },
+      { provide: APP_GUARD, useClass: PlatformAuthGuard },
+      { provide: APP_GUARD, useClass: PermissionsGuard },
     ],
   }).compile();
 
@@ -115,9 +90,7 @@ before(async () => {
   baseUrl = await app.getUrl();
 });
 
-after(async () => {
-  await app.close();
-});
+after(async () => { await app.close(); });
 
 test('public endpoint succeeds without JWT', async () => {
   const response = await fetch(`${baseUrl}/security-test/public`);
@@ -130,29 +103,21 @@ test('protected endpoint without JWT returns 401', async () => {
 });
 
 test('protected endpoint with invalid JWT returns 401', async () => {
-  const response = await fetch(`${baseUrl}/security-test/protected`, {
-    headers: { authorization: 'Bearer invalid' },
-  });
+  const response = await fetch(`${baseUrl}/security-test/protected`, { headers: { authorization: 'Bearer invalid' } });
   assert.equal(response.status, 401);
 });
 
 test('protected endpoint with valid JWT succeeds', async () => {
-  const response = await fetch(`${baseUrl}/security-test/protected`, {
-    headers: { authorization: 'Bearer allowed' },
-  });
+  const response = await fetch(`${baseUrl}/security-test/protected`, { headers: { authorization: 'Bearer allowed' } });
   assert.equal(response.status, 200);
 });
 
 test('permission endpoint rejects authenticated principal lacking permission', async () => {
-  const response = await fetch(`${baseUrl}/security-test/permission`, {
-    headers: { authorization: 'Bearer denied' },
-  });
+  const response = await fetch(`${baseUrl}/security-test/permission`, { headers: { authorization: 'Bearer denied' } });
   assert.equal(response.status, 403);
 });
 
 test('permission endpoint accepts authenticated principal with permission', async () => {
-  const response = await fetch(`${baseUrl}/security-test/permission`, {
-    headers: { authorization: 'Bearer allowed' },
-  });
+  const response = await fetch(`${baseUrl}/security-test/permission`, { headers: { authorization: 'Bearer allowed' } });
   assert.equal(response.status, 200);
 });
