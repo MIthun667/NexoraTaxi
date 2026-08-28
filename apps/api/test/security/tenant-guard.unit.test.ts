@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import test from 'node:test';
+import { test } from 'node:test';
 
 import { ExecutionContext, ForbiddenException } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
@@ -40,7 +40,7 @@ function createContext(
       getResponse: () => undefined,
       getNext: () => undefined,
     }),
-  } as ExecutionContext;
+  } as unknown as ExecutionContext;
 }
 
 function createGuard(activeOrganizations: string[] = ['org-a', 'org-b']) {
