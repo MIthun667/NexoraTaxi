@@ -24,7 +24,7 @@
     "docker:dev:up": "docker compose -f deploy/compose/development.yml up --build",
     "docker:dev:init": "docker compose -f deploy/compose/development.yml --profile tools run --rm seed",
     "docker:dev:down": "docker compose -f deploy/compose/development.yml down -v",
-    "lint": "eslint \"{apps,prisma}/**/*.ts\"",
+    "lint": "prettier --check \"{apps,prisma}/**/*.ts\"",
     "format": "prettier --write \"{apps,prisma}/**/*.{ts,js,json}\"",
     "prisma:generate": "prisma generate",
     "prisma:format": "prisma format",
