@@ -2,6 +2,7 @@ import {
   HttpException,
   HttpStatus,
   Injectable,
+  Logger,
   NestMiddleware,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
@@ -15,8 +16,15 @@ type RateLimitEntry = {
 @Injectable()
 export class AuthRateLimitMiddleware implements NestMiddleware {
   private readonly entries = new Map<string, RateLimitEntry>();
+  private readonly logger = new Logger(AuthRateLimitMiddleware.name);
 
-  constructor(private readonly configService: ConfigService) {}
+  constructor(private readonly configService: ConfigService) {
+    if (this.configService.get<string>('environment.nodeEnv') === 'production') {
+      this.logger.warn(
+        'Authentication rate limiting is process-local. Multi-instance deployments must enforce a distributed or edge rate limit in front of the API.',
+      );
+    }
+  }
 
   use(request: Request, response: Response, next: NextFunction) {
     const ttlSeconds = this.configService.get<number>('environment.authRateLimitTtl', 60);
