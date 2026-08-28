@@ -15,6 +15,11 @@ export interface EnvironmentConfiguration {
   jwtRefreshSecret: string;
   encryptionKey: string;
   nodeEnv: string;
+  redisUrl: string;
+  jobQueuePrefix: string;
+  jobDefaultAttempts: number;
+  jobBackoffMs: number;
+  workerConcurrency: number;
   ollamaBaseUrl: string;
   ollamaHealthcheckEnabled: boolean;
   ollamaMaxRetries: number;
@@ -52,6 +57,11 @@ export default registerAs(
     jwtRefreshSecret: process.env.JWT_REFRESH_SECRET ?? '',
     encryptionKey: process.env.ENCRYPTION_KEY ?? '',
     nodeEnv: process.env.NODE_ENV ?? 'development',
+    redisUrl: process.env.REDIS_URL ?? 'redis://127.0.0.1:6379',
+    jobQueuePrefix: process.env.JOB_QUEUE_PREFIX ?? 'nexora',
+    jobDefaultAttempts: Number(process.env.JOB_DEFAULT_ATTEMPTS ?? 3),
+    jobBackoffMs: Number(process.env.JOB_BACKOFF_MS ?? 1000),
+    workerConcurrency: Number(process.env.WORKER_CONCURRENCY ?? 5),
     ollamaBaseUrl: process.env.OLLAMA_BASE_URL ?? 'http://localhost:11434',
     ollamaHealthcheckEnabled: process.env.OLLAMA_HEALTHCHECK_ENABLED !== 'false',
     ollamaMaxRetries: Number(process.env.OLLAMA_MAX_RETRIES ?? 2),
