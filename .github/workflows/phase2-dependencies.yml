@@ -10,7 +10,6 @@ permissions:
 
 jobs:
   update-dependencies:
-    if: github.event.head_commit.message != 'build(deps): install BullMQ and Redis dependencies'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
