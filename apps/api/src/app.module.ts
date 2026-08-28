@@ -25,6 +25,7 @@ import { HealthModule } from './modules/health/health.module';
 import { IntelligenceModule } from './modules/intelligence/intelligence.module';
 import { IncidentsModule } from './modules/incidents/incidents.module';
 import { IntegrationsModule } from './modules/integrations/integrations.module';
+import { JobsModule } from './modules/jobs/jobs.module';
 import { KnowledgeGraphModule } from './modules/knowledge-graph/knowledge-graph.module';
 import { CrmModule } from './modules/crm/crm.module';
 import { NotificationsModule } from './modules/notifications/notifications.module';
@@ -57,6 +58,7 @@ import { SharedModule } from './shared/shared.module';
     }),
     PrismaModule,
     SharedModule,
+    JobsModule,
     AuditModule,
     AuthModule,
     AuthzModule,
@@ -95,18 +97,9 @@ import { SharedModule } from './shared/shared.module';
   providers: [
     RequestContextMiddleware,
     AuthRateLimitMiddleware,
-    {
-      provide: APP_GUARD,
-      useClass: PlatformAuthGuard,
-    },
-    {
-      provide: APP_GUARD,
-      useClass: PermissionsGuard,
-    },
-    {
-      provide: APP_GUARD,
-      useClass: TenantGuard,
-    },
+    { provide: APP_GUARD, useClass: PlatformAuthGuard },
+    { provide: APP_GUARD, useClass: PermissionsGuard },
+    { provide: APP_GUARD, useClass: TenantGuard },
   ],
 })
 export class AppModule implements NestModule {
