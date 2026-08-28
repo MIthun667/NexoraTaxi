@@ -13,9 +13,26 @@ spec:
       labels:
         app: nexora-worker
     spec:
+      terminationGracePeriodSeconds: 60
       containers:
         - name: worker
           image: ghcr.io/nexora/ai-ceo-worker:latest
           envFrom:
             - secretRef:
                 name: nexora-api-secrets
+          env:
+            - name: JOB_QUEUE_PREFIX
+              value: nexora
+            - name: JOB_DEFAULT_ATTEMPTS
+              value: '3'
+            - name: JOB_BACKOFF_MS
+              value: '1000'
+            - name: WORKER_CONCURRENCY
+              value: '5'
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
