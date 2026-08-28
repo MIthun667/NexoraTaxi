@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
   pull_request:
-    branches: [main]
+    branches: [main, fix/p0-auth-tenant-ci-hardening]
 
 permissions:
   contents: read
@@ -27,9 +27,23 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 10
     env:
       NODE_ENV: test
       DATABASE_URL: postgresql://nexora_test:nexora_test_password@127.0.0.1:5432/nexora_test?schema=public
+      REDIS_URL: redis://127.0.0.1:6379
+      JOB_QUEUE_PREFIX: nexora-ci-${{ github.run_id }}-${{ github.run_attempt }}
+      JOB_DEFAULT_ATTEMPTS: 3
+      JOB_BACKOFF_MS: 100
+      WORKER_CONCURRENCY: 2
       JWT_ACCESS_SECRET: ci-access-secret-that-is-at-least-thirty-two-characters
       JWT_REFRESH_SECRET: ci-refresh-secret-that-is-different-and-long-enough
       ENCRYPTION_KEY: ci-encryption-key-that-is-at-least-thirty-two-characters
