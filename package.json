@@ -28,6 +28,7 @@
     "format": "prettier --write \"{apps,prisma}/**/*.{ts,js,json}\"",
     "prisma:generate": "prisma generate",
     "prisma:format": "prisma format",
+    "typecheck:seed": "tsc -p tsconfig.seed.json",
     "db:seed": "prisma db seed",
     "db:standardize-passwords": "npx ts-node --transpile-only scripts/dev/tools/standardize-dev-password.ts",
     "db:backfill-universal": "npx ts-node --transpile-only scripts/migrations/manual/backfill-universal-operational-layer.ts",
