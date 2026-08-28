@@ -1,0 +1,13 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "declaration": false,
+    "incremental": false,
+    "noEmit": true,
+    "outDir": "./dist/seed-typecheck"
+  },
+  "include": [
+    "prisma/seed.ts",
+    "scripts/dev/seeds/**/*.ts"
+  ]
+}
