@@ -1,0 +1,200 @@
+{
+  "servicePackages": [
+    {
+      "key": "ai_workforce_analytics",
+      "name": "AI Workforce Analytics",
+      "category": "analytics",
+      "summary": "Readiness, utilization, absenteeism, and staffing trend intelligence for workforce leaders.",
+      "modules": ["workforce", "scheduling", "governance", "reports"]
+    },
+    {
+      "key": "ai_staffing_optimization",
+      "name": "AI Staffing Optimization",
+      "category": "optimization",
+      "summary": "Detects coverage gaps and recommends schedule or assignment adjustments.",
+      "modules": ["workforce", "scheduling", "assignments", "reasoning"]
+    },
+    {
+      "key": "ai_incident_response_automation",
+      "name": "AI Incident Response Automation",
+      "category": "automation",
+      "summary": "Prioritizes incidents, recommends escalation, and coordinates response workflows.",
+      "modules": ["incidents", "triggers", "actions", "verification"]
+    },
+    {
+      "key": "ai_operational_risk_monitoring",
+      "name": "AI Operational Risk Monitoring",
+      "category": "risk",
+      "summary": "Continuously identifies staffing, safety, maintenance, and SLA risks.",
+      "modules": ["knowledge-graph", "governance", "retrieval", "decision-reports"]
+    },
+    {
+      "key": "ai_executive_reporting",
+      "name": "AI Executive Reporting",
+      "category": "executive",
+      "summary": "Daily leadership briefs, board-ready summaries, and recommendation memos.",
+      "modules": ["reports", "governance", "executive-dashboard", "reasoning"]
+    },
+    {
+      "key": "ai_maintenance_prediction",
+      "name": "AI Maintenance Prediction",
+      "category": "asset-intelligence",
+      "summary": "Flags asset reliability risks and suggests preventive maintenance actions.",
+      "modules": ["assets", "maintenance", "knowledge-graph", "reasoning"]
+    },
+    {
+      "key": "workflow_automation_setup",
+      "name": "Workflow Automation Setup",
+      "category": "implementation",
+      "summary": "Design and rollout of approvals, triggers, escalations, and human-in-the-loop workflows.",
+      "modules": ["workflows", "approvals", "triggers"]
+    },
+    {
+      "key": "approval_system_rollout",
+      "name": "Approval System Rollout",
+      "category": "implementation",
+      "summary": "Approval queue design, policy routing, and auditability deployment.",
+      "modules": ["approvals", "audit", "notifications"]
+    },
+    {
+      "key": "executive_dashboard_implementation",
+      "name": "Executive Dashboard Implementation",
+      "category": "implementation",
+      "summary": "Deploys leadership dashboards, KPI definitions, AI summaries, and evidence links.",
+      "modules": ["reports", "governance", "dashboard"]
+    },
+    {
+      "key": "ai_monitoring_center",
+      "name": "AI Monitoring Center",
+      "category": "governance",
+      "summary": "Sets up AI Command Center, observability panels, and policy monitoring.",
+      "modules": ["governance", "observability", "agents", "decision-reports"]
+    },
+    {
+      "key": "department_digitization_hr",
+      "name": "HR Digitization Service",
+      "category": "transformation",
+      "summary": "Digitizes people operations, approvals, onboarding, and workforce analytics.",
+      "modules": ["organizations", "workforce", "workflows", "approvals"]
+    },
+    {
+      "key": "department_digitization_operations",
+      "name": "Operations Digitization Service",
+      "category": "transformation",
+      "summary": "Modernizes work orders, scheduling, assignment orchestration, and incidents.",
+      "modules": ["operations", "scheduling", "assignments", "incidents"]
+    },
+    {
+      "key": "department_digitization_safety",
+      "name": "Safety and Compliance Digitization",
+      "category": "transformation",
+      "summary": "Implements incident evidence, compliance workflows, and policy-based escalation.",
+      "modules": ["incidents", "approvals", "governance", "reports"]
+    },
+    {
+      "key": "custom_agent_deployment",
+      "name": "Custom AI Agent Deployment",
+      "category": "professional-services",
+      "summary": "Builds and configures tailored agents for customer workflows and decision domains.",
+      "modules": ["agents", "skills-library", "reasoning", "actions"]
+    },
+    {
+      "key": "hospital_operations_agent",
+      "name": "Hospital Operations Agent",
+      "category": "vertical-agent",
+      "summary": "Adapts staffing, incident, and equipment readiness intelligence to healthcare operations.",
+      "modules": ["workforce", "assets", "incidents", "scheduling"]
+    },
+    {
+      "key": "university_admin_agent",
+      "name": "University Administration Agent",
+      "category": "vertical-agent",
+      "summary": "Supports approvals, staffing, executive reporting, and operational case handling.",
+      "modules": ["organizations", "workflows", "reports", "reasoning"]
+    },
+    {
+      "key": "factory_maintenance_agent",
+      "name": "Factory Maintenance Agent",
+      "category": "vertical-agent",
+      "summary": "Coordinates maintenance risk, downtime response, and asset availability optimization.",
+      "modules": ["assets", "operations", "incidents", "decision-reports"]
+    },
+    {
+      "key": "support_copilot",
+      "name": "Customer Support Copilot",
+      "category": "service-ops",
+      "summary": "Routes support tasks, escalation workflows, and SLA risks through AI guidance.",
+      "modules": ["workflows", "connectors", "reasoning", "notifications"]
+    },
+    {
+      "key": "spreadsheet_process_migration",
+      "name": "Spreadsheet-to-System Migration",
+      "category": "modernization",
+      "summary": "Migrates ad hoc spreadsheet operations into governed workflows and operational records.",
+      "modules": ["organizations", "operations", "scheduling", "reports"]
+    },
+    {
+      "key": "legacy_erp_modernization",
+      "name": "Legacy ERP Modernization",
+      "category": "modernization",
+      "summary": "Replaces fragmented process stacks with a unified AI-native operating layer.",
+      "modules": ["core-platform", "integrations", "tenancy", "governance"]
+    },
+    {
+      "key": "connector_rollout",
+      "name": "Integration Connector Rollout",
+      "category": "integration-services",
+      "summary": "Connects the platform to email, chat, calendar, CRM, HRIS, and ticketing systems.",
+      "modules": ["integrations", "connectors", "webhooks", "sync-jobs"]
+    },
+    {
+      "key": "ai_policy_governance_setup",
+      "name": "AI Policy Governance Setup",
+      "category": "governance",
+      "summary": "Defines agent guardrails, approval boundaries, and audit-ready AI governance controls.",
+      "modules": ["agent-policy-rules", "governance", "verification", "audit"]
+    },
+    {
+      "key": "multi_department_automation",
+      "name": "Multi-Department Automation Program",
+      "category": "enterprise-transformation",
+      "summary": "Rolls out AI workflows across HR, operations, scheduling, finance, and leadership teams.",
+      "modules": ["core-platform", "operational-modules", "ai-lifecycle"]
+    },
+    {
+      "key": "operational_control_tower_rollout",
+      "name": "Operational Control Tower Rollout",
+      "category": "control-tower",
+      "summary": "Deploys the live operations command center with alerts, KPIs, and AI insights.",
+      "modules": ["dashboard", "incidents", "operations", "observability"]
+    },
+    {
+      "key": "ai_command_center_rollout",
+      "name": "AI Command Center Rollout",
+      "category": "control-tower",
+      "summary": "Deploys AI supervision, run inspection, proposal review, and policy violation oversight.",
+      "modules": ["agents", "governance", "observability", "decision-reports"]
+    },
+    {
+      "key": "executive_command_center_rollout",
+      "name": "Executive Command Center Rollout",
+      "category": "executive",
+      "summary": "Deploys leadership dashboards, risk panels, AI recommendations, and decision memos.",
+      "modules": ["reports", "governance", "executive-dashboard", "reasoning"]
+    },
+    {
+      "key": "tenant_launch_service",
+      "name": "Tenant Launch Service",
+      "category": "saas-ops",
+      "summary": "Provisions organizations, plans, usage controls, demo data, and onboarding experiences.",
+      "modules": ["tenancy", "seed-system", "billing", "onboarding"]
+    },
+    {
+      "key": "ai_roi_measurement",
+      "name": "AI ROI Measurement Service",
+      "category": "analytics",
+      "summary": "Measures adoption, verification success, operational lift, and business outcomes.",
+      "modules": ["governance", "verification", "reports", "analytics"]
+    }
+  ]
+}

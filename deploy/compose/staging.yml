@@ -1,0 +1,38 @@
+services:
+  api:
+    image: ghcr.io/nexora/ai-ceo-api:${IMAGE_TAG:-latest}
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      TRUST_PROXY: 'true'
+      RUN_MIGRATIONS_ON_BOOT: 'true'
+      DATABASE_URL: ${DATABASE_URL}
+      JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET}
+      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET}
+      OLLAMA_BASE_URL: ${OLLAMA_BASE_URL}
+      OLLAMA_MODEL: ${OLLAMA_MODEL:-qwen2.5:7b-instruct}
+      CORS_ORIGINS: ${CORS_ORIGINS}
+    depends_on:
+      - redis
+    restart: unless-stopped
+
+  worker:
+    image: ghcr.io/nexora/ai-ceo-worker:${IMAGE_TAG:-latest}
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: ${DATABASE_URL}
+      JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET}
+      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET}
+      OLLAMA_BASE_URL: ${OLLAMA_BASE_URL}
+      OLLAMA_MODEL: ${OLLAMA_MODEL:-qwen2.5:7b-instruct}
+    restart: unless-stopped
+
+  web:
+    image: ghcr.io/nexora/ai-ceo-web:${IMAGE_TAG:-latest}
+    environment:
+      NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_API_BASE_URL}
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped

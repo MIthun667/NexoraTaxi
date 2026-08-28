@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nexora-api
+  namespace: nexora-platform
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: nexora-api
+  template:
+    metadata:
+      labels:
+        app: nexora-api
+    spec:
+      containers:
+        - name: api
+          image: ghcr.io/nexora/ai-ceo-api:latest
+          ports:
+            - containerPort: 3000
+          envFrom:
+            - secretRef:
+                name: nexora-api-secrets
+          readinessProbe:
+            httpGet:
+              path: /api/v1/health/readiness
+              port: 3000
+            initialDelaySeconds: 10
+            periodSeconds: 15
+          livenessProbe:
+            httpGet:
+              path: /api/v1/health/liveness
+              port: 3000
+            initialDelaySeconds: 20
+            periodSeconds: 20

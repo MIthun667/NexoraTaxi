@@ -1,0 +1,74 @@
+{
+  "agents": [
+    {
+      "key": "executive_ai_advisor",
+      "name": "Executive AI Advisor",
+      "persona": "Leadership",
+      "value": "Produces executive briefs, risk prioritization, and next-best-action recommendations.",
+      "enabledModules": ["reports", "governance", "reasoning", "skills-library"]
+    },
+    {
+      "key": "operations_ai_analyst",
+      "name": "Operations AI Analyst",
+      "persona": "Operations leaders",
+      "value": "Monitors work orders, assignments, incidents, and throughput risks.",
+      "enabledModules": ["operations", "assignments", "incidents", "knowledge-graph"]
+    },
+    {
+      "key": "hr_ai_assistant",
+      "name": "HR AI Assistant",
+      "persona": "People operations",
+      "value": "Surfaces staffing gaps, leave risks, onboarding needs, and policy reminders.",
+      "enabledModules": ["workforce", "workflows", "approvals", "reports"]
+    },
+    {
+      "key": "maintenance_risk_agent",
+      "name": "Maintenance Risk Agent",
+      "persona": "Asset managers",
+      "value": "Flags overdue maintenance, readiness degradation, and uptime risks.",
+      "enabledModules": ["assets", "operations", "incidents", "decision-reports"]
+    },
+    {
+      "key": "incident_escalation_agent",
+      "name": "Incident Escalation Agent",
+      "persona": "Safety and response teams",
+      "value": "Triage, escalation, routing, and response guidance for operational incidents.",
+      "enabledModules": ["incidents", "triggers", "actions", "verification"]
+    },
+    {
+      "key": "staffing_optimization_agent",
+      "name": "Staffing Optimization Agent",
+      "persona": "Scheduling and workforce planners",
+      "value": "Finds understaffed shifts and proposes the least disruptive staffing changes.",
+      "enabledModules": ["workforce", "scheduling", "assignments", "skills-library"]
+    },
+    {
+      "key": "workflow_continuity_agent",
+      "name": "Workflow Continuity Agent",
+      "persona": "Process owners",
+      "value": "Detects stalled approvals and workflow bottlenecks and recommends escalation paths.",
+      "enabledModules": ["workflows", "approvals", "notifications", "reports"]
+    },
+    {
+      "key": "compliance_monitor_agent",
+      "name": "Compliance Monitor Agent",
+      "persona": "Governance and compliance teams",
+      "value": "Monitors policy exceptions, expiring credentials, and audit-readiness issues.",
+      "enabledModules": ["governance", "verification", "audit", "workforce"]
+    },
+    {
+      "key": "connector_ops_agent",
+      "name": "Connector Operations Agent",
+      "persona": "Integration admins",
+      "value": "Observes sync failures, webhook disruptions, and outbound delivery issues.",
+      "enabledModules": ["integrations", "observability", "incidents", "reports"]
+    },
+    {
+      "key": "daily_company_brief_agent",
+      "name": "Daily Company Brief Agent",
+      "persona": "Executives and department heads",
+      "value": "Generates daily briefings linking operational state, AI risks, and leadership actions.",
+      "enabledModules": ["reports", "governance", "knowledge-graph", "reasoning"]
+    }
+  ]
+}

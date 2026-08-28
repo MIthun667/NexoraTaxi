@@ -1,0 +1,40 @@
+{
+  "verticalPackages": [
+    {
+      "key": "logistics_ai_os",
+      "name": "Logistics AI OS",
+      "focus": "Dispatch, field work, asset readiness, route disruption, incident control",
+      "coreModules": ["operations", "scheduling", "assignments", "assets", "incidents"]
+    },
+    {
+      "key": "field_service_ai_os",
+      "name": "Field Service AI OS",
+      "focus": "Technician scheduling, work order completion, maintenance coordination, SLA visibility",
+      "coreModules": ["operations", "workforce", "assets", "assignments", "reports"]
+    },
+    {
+      "key": "healthcare_operations_ai_os",
+      "name": "Healthcare Operations AI OS",
+      "focus": "Shift coverage, operational incidents, equipment readiness, leadership alerts",
+      "coreModules": ["workforce", "scheduling", "assets", "incidents", "executive-dashboard"]
+    },
+    {
+      "key": "retail_operations_ai_os",
+      "name": "Retail Operations AI OS",
+      "focus": "Staffing, execution bottlenecks, incident response, executive summaries",
+      "coreModules": ["workforce", "operations", "scheduling", "incidents", "reports"]
+    },
+    {
+      "key": "security_operations_ai_os",
+      "name": "Security Operations AI OS",
+      "focus": "Patrol coverage, escalation, incident prioritization, compliance visibility",
+      "coreModules": ["scheduling", "assignments", "incidents", "governance", "notifications"]
+    },
+    {
+      "key": "back_office_ai_os",
+      "name": "Back Office AI OS",
+      "focus": "Approvals, workflows, HR operations, executive reporting, AI governance",
+      "coreModules": ["workflows", "approvals", "workforce", "reports", "governance"]
+    }
+  ]
+}

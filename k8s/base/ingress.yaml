@@ -1,0 +1,28 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: nexora-platform
+  namespace: nexora-platform
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: app.nexora.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: nexora-web
+                port:
+                  number: 3001
+    - host: api.nexora.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: nexora-api
+                port:
+                  number: 3000

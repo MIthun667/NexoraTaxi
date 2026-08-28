@@ -1,0 +1,102 @@
+{
+  "tiers": [
+    {
+      "key": "starter",
+      "name": "Starter",
+      "targetCustomer": "Single-team SMBs",
+      "priceModel": {
+        "baseMonthly": 499,
+        "includedSeats": 10,
+        "includedAgentRuns": 1000
+      },
+      "features": [
+        "core-platform",
+        "workforce",
+        "operations",
+        "basic-approvals",
+        "basic-dashboard"
+      ],
+      "limits": {
+        "organizations": 1,
+        "connectors": 2,
+        "customAgents": 1,
+        "aiReportsPerMonth": 100
+      }
+    },
+    {
+      "key": "professional",
+      "name": "Professional",
+      "targetCustomer": "Growing operations teams",
+      "priceModel": {
+        "baseMonthly": 1999,
+        "includedSeats": 50,
+        "includedAgentRuns": 10000
+      },
+      "features": [
+        "starter",
+        "assets",
+        "scheduling",
+        "incidents",
+        "connectors",
+        "ai-command-center",
+        "operational-command-center"
+      ],
+      "limits": {
+        "organizations": 1,
+        "connectors": 10,
+        "customAgents": 5,
+        "aiReportsPerMonth": 1000
+      }
+    },
+    {
+      "key": "enterprise",
+      "name": "Enterprise",
+      "targetCustomer": "Multi-department enterprises",
+      "priceModel": {
+        "baseMonthly": 7999,
+        "includedSeats": 250,
+        "includedAgentRuns": 100000
+      },
+      "features": [
+        "professional",
+        "executive-command-center",
+        "advanced-workflows",
+        "knowledge-graph",
+        "governance",
+        "decision-reports",
+        "multi-tenant-admin-controls"
+      ],
+      "limits": {
+        "organizations": 5,
+        "connectors": 30,
+        "customAgents": 20,
+        "aiReportsPerMonth": 10000
+      }
+    },
+    {
+      "key": "enterprise_ai",
+      "name": "Enterprise AI",
+      "targetCustomer": "AI-first operators and transformation programs",
+      "priceModel": {
+        "baseMonthly": 14999,
+        "includedSeats": 500,
+        "includedAgentRuns": 500000
+      },
+      "features": [
+        "enterprise",
+        "advanced-automation",
+        "agent-skills-library",
+        "predictive-insights",
+        "custom-model-governance",
+        "premium-support",
+        "dedicated-ai-runtime-options"
+      ],
+      "limits": {
+        "organizations": 20,
+        "connectors": 100,
+        "customAgents": 100,
+        "aiReportsPerMonth": 100000
+      }
+    }
+  ]
+}

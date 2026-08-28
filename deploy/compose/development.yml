@@ -1,0 +1,109 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: nexora-postgres-dev
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: nexora_taxi
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres_dev_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres -d nexora_taxi']
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    container_name: nexora-redis-dev
+    ports:
+      - '6379:6379'
+    volumes:
+      - redis_dev_data:/data
+
+  ollama:
+    image: ollama/ollama:latest
+    container_name: nexora-ollama-dev
+    ports:
+      - '11434:11434'
+    volumes:
+      - ollama_dev_data:/root/.ollama
+
+  api:
+    build:
+      context: ../..
+      dockerfile: docker/Dockerfile.api
+    container_name: nexora-api-dev
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      NODE_ENV: development
+      PORT: 3000
+      API_PREFIX: api/v1
+      TRUST_PROXY: 'true'
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/nexora_taxi?schema=public
+      JWT_ACCESS_SECRET: dev-access-secret-please-change-1234567890
+      JWT_REFRESH_SECRET: dev-refresh-secret-please-change-1234567890
+      OLLAMA_BASE_URL: http://ollama:11434
+      OLLAMA_MODEL: qwen2.5:7b-instruct
+      RUN_MIGRATIONS_ON_BOOT: 'true'
+      CORS_ORIGINS: http://localhost:3001
+    ports:
+      - '3000:3000'
+
+  worker:
+    build:
+      context: ../..
+      dockerfile: docker/Dockerfile.worker
+    container_name: nexora-worker-dev
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      NODE_ENV: development
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/nexora_taxi?schema=public
+      JWT_ACCESS_SECRET: dev-access-secret-please-change-1234567890
+      JWT_REFRESH_SECRET: dev-refresh-secret-please-change-1234567890
+      OLLAMA_BASE_URL: http://ollama:11434
+      OLLAMA_MODEL: qwen2.5:7b-instruct
+
+  web:
+    build:
+      context: ../..
+      dockerfile: docker/Dockerfile.web
+    container_name: nexora-web-dev
+    depends_on:
+      - api
+    environment:
+      NEXT_PUBLIC_API_BASE_URL: /api/v1
+      API_PROXY_TARGET: http://api:3000
+    ports:
+      - '3001:3001'
+
+  seed:
+    build:
+      context: ../..
+      dockerfile: docker/Dockerfile.api
+      target: build
+    profiles:
+      - tools
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      NODE_ENV: development
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/nexora_taxi?schema=public
+      JWT_ACCESS_SECRET: dev-access-secret-please-change-1234567890
+      JWT_REFRESH_SECRET: dev-refresh-secret-please-change-1234567890
+      OLLAMA_BASE_URL: http://ollama:11434
+      OLLAMA_MODEL: qwen2.5:7b-instruct
+    command: sh -lc "pnpm prisma migrate deploy && pnpm prisma db push && pnpm db:seed && pnpm db:standardize-passwords"
+
+volumes:
+  postgres_dev_data:
+  redis_dev_data:
+  ollama_dev_data:

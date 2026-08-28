@@ -1,0 +1,3482 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum OrganizationStatus {
+  ACTIVE
+  INACTIVE
+  SUSPENDED
+  ARCHIVED
+}
+
+enum OrganizationLifecycleStatus {
+  PROSPECT
+  TRIAL
+  ACTIVE_CUSTOMER
+  SUSPENDED
+  TERMINATED
+}
+
+enum SubscriptionStatus {
+  TRIALING
+  ACTIVE
+  PAST_DUE
+  CANCELLED
+  SUSPENDED
+  TERMINATED
+}
+
+enum BillingCycle {
+  MONTHLY
+  YEARLY
+  CUSTOM
+}
+
+enum UsageMetricType {
+  AGENT_RUNS
+  AI_TOKENS
+  CONNECTOR_CALLS
+  WORKFLOW_EXECUTIONS
+  REPORT_GENERATIONS
+}
+
+enum BillingEventType {
+  SUBSCRIPTION_STARTED
+  SUBSCRIPTION_UPGRADED
+  SUBSCRIPTION_DOWNGRADED
+  USAGE_THRESHOLD_EXCEEDED
+  TRIAL_ENDED
+  PAYMENT_FAILED
+  PAYMENT_SUCCEEDED
+}
+
+enum SystemAlertSeverity {
+  INFO
+  WARNING
+  CRITICAL
+}
+
+enum SystemAlertStatus {
+  OPEN
+  ACKNOWLEDGED
+  RESOLVED
+}
+
+enum HealthCheckStatus {
+  HEALTHY
+  DEGRADED
+  UNHEALTHY
+}
+
+enum DepartmentStatus {
+  ACTIVE
+  INACTIVE
+  ARCHIVED
+}
+
+enum PositionStatus {
+  DRAFT
+  ACTIVE
+  INACTIVE
+  ARCHIVED
+}
+
+enum EmploymentStatus {
+  ACTIVE
+  ONBOARDING
+  PROBATION
+  LEAVE_OF_ABSENCE
+  SUSPENDED
+  TERMINATED
+}
+
+enum UserStatus {
+  INVITED
+  ACTIVE
+  LOCKED
+  SUSPENDED
+  DEACTIVATED
+}
+
+enum WorkflowInstanceStatus {
+  ACTIVE
+  COMPLETED
+  CANCELLED
+  FAILED
+}
+
+enum WorkflowTaskStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  REJECTED
+  CANCELLED
+  ESCALATED
+}
+
+enum TaskActionType {
+  APPROVE
+  REJECT
+  SEND_BACK
+  COMMENT
+  ASSIGN
+  ESCALATE
+  COMPLETE
+}
+
+enum EscalationType {
+  ROLE_ESCALATION
+  USER_NOTIFICATION
+  SLA_BREACH
+}
+
+enum ApprovalRequestStatus {
+  PENDING
+  IN_PROGRESS
+  APPROVED
+  REJECTED
+  CANCELLED
+}
+
+enum ApprovalStepStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  SKIPPED
+  CANCELLED
+}
+
+enum ApprovalDecisionType {
+  APPROVE
+  REJECT
+  SEND_BACK
+  COMMENT
+  CANCEL
+}
+
+enum DriverOnboardingStatus {
+  PENDING
+  IN_REVIEW
+  APPROVED
+  REJECTED
+  COMPLETED
+}
+
+enum DriverOperationalStatus {
+  ACTIVE
+  INACTIVE
+  SUSPENDED
+  OFF_DUTY
+  BLOCKED
+}
+
+enum DriverComplianceStatus {
+  PENDING
+  COMPLIANT
+  NON_COMPLIANT
+  EXPIRED
+  UNDER_REVIEW
+}
+
+enum DriverAssignmentStatus {
+  AVAILABLE
+  ASSIGNED
+  UNAVAILABLE
+  RESTRICTED
+}
+
+enum DriverDocumentType {
+  DRIVER_LICENSE
+  NATIONAL_ID
+  VEHICLE_PERMIT
+  BACKGROUND_CHECK
+  MEDICAL_CERTIFICATE
+  INSURANCE_PROOF
+  OTHER
+}
+
+enum DocumentVerificationStatus {
+  PENDING
+  VERIFIED
+  REJECTED
+  EXPIRED
+}
+
+enum DriverStatusCategory {
+  ONBOARDING_STATUS
+  OPERATIONAL_STATUS
+  COMPLIANCE_STATUS
+  ASSIGNMENT_STATUS
+}
+
+enum FleetVehicleClass {
+  SEDAN
+  HATCHBACK
+  SUV
+  MICRO
+  EXECUTIVE
+  PREMIUM
+  VAN
+  OTHER
+}
+
+enum FleetOnboardingStatus {
+  PENDING
+  IN_REVIEW
+  APPROVED
+  REJECTED
+  COMPLETED
+}
+
+enum FleetOperationalStatus {
+  ACTIVE
+  INACTIVE
+  IN_SERVICE
+  OUT_OF_SERVICE
+  SUSPENDED
+  BLOCKED
+}
+
+enum FleetComplianceStatus {
+  PENDING
+  COMPLIANT
+  NON_COMPLIANT
+  EXPIRED
+  UNDER_REVIEW
+}
+
+enum FleetAssignmentStatus {
+  AVAILABLE
+  ASSIGNED
+  RESERVED
+  UNAVAILABLE
+  RESTRICTED
+}
+
+enum FleetMaintenanceStatus {
+  SCHEDULED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+  OVERDUE
+}
+
+enum FleetMaintenanceType {
+  ROUTINE_SERVICE
+  OIL_CHANGE
+  TIRE_SERVICE
+  BRAKE_SERVICE
+  INSPECTION
+  REPAIR
+  CLEANING
+  OTHER
+}
+
+enum FleetStatusCategory {
+  ONBOARDING_STATUS
+  OPERATIONAL_STATUS
+  COMPLIANCE_STATUS
+  ASSIGNMENT_STATUS
+}
+
+enum DispatchShiftStatus {
+  SCHEDULED
+  ACTIVE
+  COMPLETED
+  CANCELLED
+}
+
+enum DriverVehicleAssignmentStatus {
+  ASSIGNED
+  ACTIVE
+  RELEASED
+  CANCELLED
+  SUSPENDED
+}
+
+enum DispatchRunStatus {
+  CREATED
+  ACTIVE
+  COMPLETED
+  CANCELLED
+  FAILED
+}
+
+enum DispatchIncidentType {
+  VEHICLE_BREAKDOWN
+  DRIVER_NO_SHOW
+  COMPLIANCE_ALERT
+  CUSTOMER_ESCALATION
+  ROUTE_DISRUPTION
+  SAFETY_EVENT
+  OTHER
+}
+
+enum DispatchIncidentSeverity {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum DispatchIncidentStatus {
+  OPEN
+  IN_PROGRESS
+  RESOLVED
+  CANCELLED
+}
+
+enum NotificationCategory {
+  APPROVAL
+  WORKFLOW
+  DRIVER
+  FLEET
+  DISPATCH
+  INCIDENT
+  COMPLIANCE
+  SYSTEM
+}
+
+enum NotificationSeverity {
+  INFO
+  WARNING
+  CRITICAL
+}
+
+enum NotificationStatus {
+  UNREAD
+  READ
+  ARCHIVED
+}
+
+enum InferenceStatus {
+  SUCCEEDED
+  FAILED
+  TIMEOUT
+  VALIDATION_FAILED
+}
+
+enum AgentCategory {
+  OPERATIONS
+  APPROVALS
+  DISPATCH
+  DRIVERS
+  FLEET
+  COMPLIANCE
+  SYSTEM
+}
+
+enum AgentTriggerType {
+  MANUAL
+  SCHEDULED
+  EVENT_DRIVEN
+  API
+}
+
+enum AgentTriggerEventType {
+  SCHEDULED
+  SIGNAL_TRIGGERED
+  EXECUTION_FOLLOWUP
+  MANUAL
+}
+
+enum AgentTriggerEventSource {
+  SCHEDULER
+  SIGNAL
+  ACTION_EXECUTION
+  OPERATOR
+  ONBOARDING
+}
+
+enum AgentTriggerEventStatus {
+  PENDING
+  PROCESSED
+  SKIPPED
+  FAILED
+}
+
+enum AgentRunStatus {
+  PENDING
+  RUNNING
+  WAITING_APPROVAL
+  ACTED
+  SUCCEEDED
+  VERIFIED_SUCCESS
+  VERIFIED_PARTIAL
+  VERIFIED_FAILED
+  ESCALATED
+  FAILED
+  CANCELLED
+}
+
+enum AgentVerificationType {
+  EXECUTION
+  STATE
+  POLICY
+  OUTCOME
+}
+
+enum AgentVerificationStatus {
+  PASSED
+  PARTIAL
+  FAILED
+  PENDING
+}
+
+enum AgentFeedbackSourceType {
+  HUMAN
+  SYSTEM
+}
+
+enum AgentFeedbackType {
+  USEFUL
+  NOT_USEFUL
+  OVERRIDE
+  CORRECTION
+  RATING
+}
+
+enum DecisionReportType {
+  OPERATIONAL_RISK
+  INCIDENT_ESCALATION
+  STAFFING_GAP
+  ASSET_MAINTENANCE_RISK
+  EXECUTIVE_SUMMARY
+}
+
+enum ConnectorCategory {
+  COMMUNICATION
+  CALENDAR
+  BUSINESS_SYSTEM
+  OPERATIONAL
+  STORAGE_EXPORT
+}
+
+enum ConnectorAuthType {
+  API_KEY
+  OAUTH2
+  WEBHOOK_SECRET
+  BASIC_TOKEN
+  SERVICE_ACCOUNT
+}
+
+enum ConnectorInstanceStatus {
+  ACTIVE
+  DISABLED
+  ERROR
+  PENDING
+}
+
+enum ConnectorSyncJobStatus {
+  PENDING
+  RUNNING
+  SUCCEEDED
+  FAILED
+  PARTIAL
+}
+
+enum ConnectorActionLogStatus {
+  PENDING
+  SUCCEEDED
+  FAILED
+  BLOCKED
+}
+
+enum AgentObservationType {
+  CONTEXT_GATHERED
+  METRIC_ANALYZED
+  ENTITY_EVALUATED
+  POLICY_CHECKED
+  EXTERNAL_SIGNAL
+}
+
+enum AgentDecisionType {
+  SUMMARY
+  RECOMMENDATION
+  RISK_ASSESSMENT
+  PRIORITIZATION
+  ESCALATION_SUGGESTION
+}
+
+enum AgentActionProposalStatus {
+  PROPOSED
+  APPROVAL_REQUIRED
+  APPROVED
+  REJECTED
+  EXECUTED
+  CANCELLED
+}
+
+enum AgentRiskLevel {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum AgentConfidenceLevel {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+enum WorkforceMemberType {
+  EMPLOYEE
+  CONTRACTOR
+  TEMPORARY
+  PARTNER
+  SERVICE_PROVIDER
+  ROBOTIC_OPERATOR
+}
+
+enum WorkforceEmploymentModel {
+  FULL_TIME
+  PART_TIME
+  CONTRACT
+  OUTSOURCED
+  PARTNER_MANAGED
+}
+
+enum WorkforceAuthorizationType {
+  LICENSE
+  CERTIFICATION
+  PERMIT
+  CLEARANCE
+  TRAINING_AUTHORIZATION
+  APPROVAL_AUTHORITY
+  OTHER
+}
+
+enum WorkforceAuthorizationStatus {
+  PENDING
+  ACTIVE
+  EXPIRED
+  SUSPENDED
+  REVOKED
+}
+
+enum WorkforceOperationalStatus {
+  ACTIVE
+  INACTIVE
+  SUSPENDED
+  BLOCKED
+  OFF_DUTY
+  ON_LEAVE
+}
+
+enum WorkforceComplianceStatus {
+  PENDING
+  COMPLIANT
+  NON_COMPLIANT
+  EXPIRED
+  UNDER_REVIEW
+}
+
+enum WorkforceAvailabilityStatus {
+  AVAILABLE
+  ASSIGNED
+  RESERVED
+  UNAVAILABLE
+  RESTRICTED
+}
+
+enum CredentialDocumentType {
+  LICENSE
+  CERTIFICATION
+  TRAINING_RECORD
+  BACKGROUND_CHECK
+  INSURANCE
+  PERMIT
+  IDENTITY_DOCUMENT
+  MEDICAL_CLEARANCE
+  OTHER
+}
+
+enum CredentialVerificationStatus {
+  PENDING
+  VERIFIED
+  REJECTED
+  EXPIRED
+}
+
+enum WorkforceStatusCategory {
+  OPERATIONAL_STATUS
+  COMPLIANCE_STATUS
+  AVAILABILITY_STATUS
+}
+
+enum AssetType {
+  VEHICLE
+  EQUIPMENT
+  DEVICE
+  FACILITY
+  ROOM
+  TOOL
+  ROBOT
+  OTHER
+}
+
+enum AssetOperationalStatus {
+  ACTIVE
+  INACTIVE
+  IN_SERVICE
+  OUT_OF_SERVICE
+  BLOCKED
+  RETIRED
+}
+
+enum AssetComplianceStatus {
+  PENDING
+  COMPLIANT
+  NON_COMPLIANT
+  EXPIRED
+  UNDER_REVIEW
+}
+
+enum AssetAvailabilityStatus {
+  AVAILABLE
+  ASSIGNED
+  RESERVED
+  UNAVAILABLE
+  RESTRICTED
+}
+
+enum AssetMaintenanceType {
+  INSPECTION
+  PREVENTIVE
+  REPAIR
+  CALIBRATION
+  CLEANING
+  REPLACEMENT
+  OTHER
+}
+
+enum AssetMaintenanceStatus {
+  SCHEDULED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+  OVERDUE
+}
+
+enum AssetStatusCategory {
+  OPERATIONAL_STATUS
+  COMPLIANCE_STATUS
+  AVAILABILITY_STATUS
+}
+
+enum OperationalZoneType {
+  GEOGRAPHIC
+  FACILITY
+  CAMPUS
+  REGION
+  TERRITORY
+  SERVICE_AREA
+  FUNCTIONAL
+}
+
+enum WorkOrderStatus {
+  DRAFT
+  PLANNED
+  READY
+  ACTIVE
+  BLOCKED
+  COMPLETED
+  CANCELLED
+  FAILED
+}
+
+enum WorkOrderPriority {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum SchedulePlanStatus {
+  DRAFT
+  ACTIVE
+  FINALIZED
+  CANCELLED
+}
+
+enum SchedulePlanType {
+  DAILY
+  WEEKLY
+  MONTHLY
+  CAMPAIGN
+  EVENT
+  ROLLING
+}
+
+enum ShiftType {
+  OPERATIONS
+  FIELD_SERVICE
+  COVERAGE
+  ON_CALL
+  MAINTENANCE
+  SUPPORT
+  OTHER
+}
+
+enum ScheduleShiftStatus {
+  SCHEDULED
+  ACTIVE
+  COMPLETED
+  CANCELLED
+}
+
+enum IncidentSeverity {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum OperationalIncidentStatus {
+  OPEN
+  IN_PROGRESS
+  RESOLVED
+  CANCELLED
+}
+
+enum IncidentActionType {
+  COMMENT
+  ESCALATE
+  REASSIGN
+  MITIGATE
+  RESOLVE
+  CLOSE
+}
+
+enum AssignmentType {
+  WORKFORCE_TO_WORKORDER
+  ASSET_TO_WORKORDER
+  WORKFORCE_TO_ASSET
+  WORKFORCE_TO_SHIFT
+  ASSET_TO_SHIFT
+  COMPOSITE
+}
+
+enum ResourceAssignmentStatus {
+  PLANNED
+  ASSIGNED
+  ACTIVE
+  RELEASED
+  CANCELLED
+  SUSPENDED
+}
+
+enum DomainEventProcessingStatus {
+  PENDING
+  PUBLISHED
+  PROCESSING
+  PROCESSED
+  FAILED
+  DEAD_LETTER
+}
+
+enum DomainActorType {
+  USER
+  AGENT
+  SYSTEM
+  SERVICE
+}
+
+enum TriggerActionType {
+  START_WORKFLOW
+  CREATE_APPROVAL
+  START_AGENT_RUN
+  SEND_NOTIFICATION
+  ENQUEUE_FOLLOWUP_TASK
+  NO_OP
+}
+
+enum TriggerExecutionStatus {
+  PENDING
+  RUNNING
+  SUCCEEDED
+  FAILED
+  SKIPPED
+  DUPLICATE
+  COOLDOWN_BLOCKED
+}
+
+enum ActionExecutionStatus {
+  PENDING
+  PENDING_APPROVAL
+  APPROVED
+  REJECTED
+  EXECUTING
+  COMPLETED
+  SUCCEEDED
+  FAILED
+  BLOCKED
+  DUPLICATE
+}
+
+enum AiOnboardingStep {
+  CONNECT_STORE
+  INITIAL_SHOPIFY_SYNC
+  CONNECT_PAYMENTS
+  INITIAL_STRIPE_SYNC
+  FIRST_BRIEF_READY
+}
+
+enum ActionApprovalStatus {
+  NOT_REQUIRED
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum ActionOutcomeType {
+  POSITIVE
+  NEUTRAL
+  NEGATIVE
+  UNKNOWN
+}
+
+enum ActionImpactMetric {
+  REVENUE_CHANGE
+  ORDER_CHANGE
+  CUSTOMER_CHANGE
+  SYSTEM_HEALTH_CHANGE
+}
+
+model ActionOutcome {
+  id                String               @id @default(uuid()) @db.Uuid
+  executionId       String               @unique @db.Uuid
+  proposalId        String?              @db.Uuid
+  recommendationId  String?              @db.Uuid
+  organizationId    String               @db.Uuid
+  outcomeType       ActionOutcomeType    @default(UNKNOWN)
+  outcomeScore      Float                @default(0)
+  impactMetrics     Json?
+  notes             String?              @db.VarChar(1000)
+  recordedAt        DateTime             @default(now())
+  execution         ActionExecution      @relation(fields: [executionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  organization      Organization         @relation(fields: [organizationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@index([organizationId])
+  @@index([proposalId])
+  @@index([recommendationId])
+  @@map("action_outcomes")
+}
+
+model DecisionLog {
+  id             String         @id @default(uuid()) @db.Uuid
+  proposalId     String         @db.Uuid
+  organizationId String         @db.Uuid
+  decision       String         @db.VarChar(40)
+  decidedByUserId String?        @db.Uuid
+  decidedAt      DateTime       @default(now())
+  reason         String?        @db.VarChar(1000)
+  metadata       Json?
+  proposal       ActionProposal @relation(fields: [proposalId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  organization   Organization   @relation(fields: [organizationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  decidedByUser  User?          @relation(fields: [decidedByUserId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+
+  @@index([organizationId])
+  @@index([proposalId])
+  @@map("decision_logs")
+}
+
+enum ActionExecutionType {
+  RETRY_SHOPIFY_SYNC
+  RETRY_STRIPE_SYNC
+  RECONNECT_STORE
+  TRIGGER_DATA_REFRESH
+  ESCALATE_ISSUE
+  MARK_RESOLVED
+}
+
+enum StrategicPlanningWindow {
+  CURRENT_CYCLE
+  NEXT_30_DAYS
+  NEXT_QUARTER
+}
+
+enum StrategicPlanStatus {
+  DRAFT
+  ACTIVE
+  ARCHIVED
+}
+
+enum StrategicPriorityCategory {
+  REVENUE
+  CUSTOMERS
+  INTEGRATIONS
+  OPERATIONS
+  TRUST
+  PAYMENTS
+  CATALOG
+}
+
+enum StrategicPriorityStatus {
+  IDENTIFIED
+  IN_PROGRESS
+  BLOCKED
+  COMPLETED
+}
+
+enum StrategicPriorityUrgency {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+enum StrategicReviewWindow {
+  LAST_7_DAYS
+  CURRENT_WEEK
+  LAST_30_DAYS
+}
+
+model ActionExecution {
+  id                String                @id @default(uuid()) @db.Uuid
+  proposalId        String?               @db.Uuid
+  organizationId    String                @db.Uuid
+  type              ActionExecutionType
+  status            ActionExecutionStatus @default(PENDING)
+  approvalStatus    ActionApprovalStatus  @default(PENDING)
+  requestedByUserId String?               @db.Uuid
+  approvedByUserId  String?               @db.Uuid
+  executedAt        DateTime?
+  result            Json?
+  error             String?               @db.VarChar(1000)
+  metadata          Json?
+  createdAt         DateTime              @default(now())
+  updatedAt         DateTime              @updatedAt
+  organization      Organization          @relation(fields: [organizationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  proposal          ActionProposal?       @relation(fields: [proposalId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  requestedByUser   User?                 @relation("ActionExecutionRequestedByUser", fields: [requestedByUserId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  approvedByUser    User?                 @relation("ActionExecutionApprovedByUser", fields: [approvedByUserId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  auditTrail        ActionExecutionAudit[]
+  outcome           ActionOutcome?
+
+  @@index([organizationId])
+  @@index([proposalId])
+  @@index([status])
+  @@index([type])
+  @@map("action_executions")
+}
+
+model StrategicPlan {
+  id              String                  @id @default(uuid()) @db.Uuid
+  organizationId  String                  @db.Uuid
+  createdByUserId String?                 @db.Uuid
+  title           String                  @db.VarChar(255)
+  planningWindow  StrategicPlanningWindow
+  status          StrategicPlanStatus     @default(DRAFT)
+  summary         String?                 @db.VarChar(2000)
+  metadata        Json?
+  createdAt       DateTime                @default(now())
+  updatedAt       DateTime                @updatedAt
+  organization    Organization            @relation(fields: [organizationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  createdByUser   User?                   @relation("StrategicPlanCreatedByUser", fields: [createdByUserId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  priorities      StrategicPriority[]
+  reviewReports   StrategicReviewReport[]
+
+  @@index([organizationId])
+  @@index([organizationId, planningWindow])
+  @@index([status])
+  @@map("strategic_plans")
+}
+
+model StrategicPriority {
+  id                    String                    @id @default(uuid()) @db.Uuid
+  strategicPlanId       String                    @db.Uuid
+  title                 String                    @db.VarChar(255)
+  description           String                    @db.VarChar(2000)
+  category              StrategicPriorityCategory
+  status                StrategicPriorityStatus   @default(IDENTIFIED)
+  urgency               StrategicPriorityUrgency  @default(MEDIUM)
+  linkedSignals         Json?
+  linkedRecommendations Json?
+  linkedProposals       Json?
+  linkedScenarios       Json?
+  linkedExecutions      Json?
+  linkedAgentRuns       Json?
+  linkedOutcomeSummary  Json?
+  successCriteria       Json?
+  owner                 String?                   @db.VarChar(255)
+  targetDate            DateTime?
+  notes                 String?                   @db.VarChar(2000)
+  metadata              Json?
+  createdAt             DateTime                  @default(now())
+  updatedAt             DateTime                  @updatedAt
+  strategicPlan         StrategicPlan             @relation(fields: [strategicPlanId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@index([strategicPlanId])
+  @@index([category])
+  @@index([status])
+  @@index([urgency])
+  @@map("strategic_priorities")
+}
+
+model StrategicReviewReport {
+  id               String                @id @default(uuid()) @db.Uuid
+  organizationId   String                @db.Uuid
+  strategicPlanId  String?               @db.Uuid
+  reviewWindow     StrategicReviewWindow
+  windowStart      DateTime
+  windowEnd        DateTime
+  summary          String?               @db.VarChar(2000)
+  trustSnapshot    Json?
+  priorityProgress Json?
+  signalChanges    Json?
+  actionReview     Json?
+  outcomeReview    Json?
+  scenarioNotes    Json?
+  executiveFocus   Json?
+  limitations      Json?
+  metadata         Json?
+  generatedAt      DateTime              @default(now())
+  createdAt        DateTime              @default(now())
+  updatedAt        DateTime              @updatedAt
+  organization     Organization          @relation(fields: [organizationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  strategicPlan    StrategicPlan?        @relation(fields: [strategicPlanId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+
+  @@index([organizationId, reviewWindow, generatedAt])
+  @@index([strategicPlanId, generatedAt])
+  @@map("strategic_review_reports")
+}
+
+model ActionExecutionAudit {
+  id                String          @id @default(uuid()) @db.Uuid
+  executionId       String          @db.Uuid
+  organizationId    String          @db.Uuid
+  action            String          @db.VarChar(100)
+  actorUserId       String?         @db.Uuid
+  previousStatus    String?         @db.VarChar(40)
+  newStatus         String?         @db.VarChar(40)
+  metadata          Json?
+  createdAt          DateTime          @default(now())
+  execution         ActionExecution @relation(fields: [executionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  organization      Organization    @relation(fields: [organizationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@index([executionId])
+
+  @@index([organizationId, createdAt])
+  @@map("action_execution_audit")
+}
+
+model AiOnboardingStatus {
+  id                        String             @id @default(uuid()) @db.Uuid
+  organizationId            String             @unique @db.Uuid
+  currentStep               AiOnboardingStep   @default(CONNECT_STORE)
+  stepsCompleted            AiOnboardingStep[]
+  shopifyConnected          Boolean            @default(false)
+  stripeConnected           Boolean            @default(false)
+  shopifyFirstSyncCompleted Boolean            @default(false)
+  stripeFirstSyncCompleted  Boolean            @default(false)
+  onboardingCompleted       Boolean            @default(false)
+  createdAt                 DateTime           @default(now())
+  updatedAt                 DateTime           @updatedAt
+  organization              Organization       @relation(fields: [organizationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@index([organizationId])
+  @@map("ai_onboarding_statuses")
+}
+
+model AiOnboardingAudit {
+  id             String           @id @default(uuid()) @db.Uuid
+  organizationId String           @db.Uuid
+  step           AiOnboardingStep
+  action         String           @db.VarChar(100)
+  metadata       Json?
+  createdAt      DateTime         @default(now())
+
+  @@index([organizationId, createdAt])
+  @@map("ai_onboarding_audit")
+}
+
+model Organization {
+  id                  String                    @id @default(uuid()) @db.Uuid
+  name                String                    @db.VarChar(160)
+  slug                String                    @db.VarChar(80)
+  status              OrganizationStatus        @default(ACTIVE)
+  lifecycleStatus     OrganizationLifecycleStatus @default(PROSPECT)
+  createdAt           DateTime                  @default(now())
+  updatedAt           DateTime                  @updatedAt
+  deletedAt           DateTime?
+  departments         Department[]
+  positions           Position[]
+  employees           Employee[]
+  users               User[]
+  workflowInstances   WorkflowInstance[]
+  approvalRequests    ApprovalRequest[]
+  drivers             Driver[]
+  fleetVehicles       FleetVehicle[]
+  dispatchZones       DispatchZone[]
+  dispatchShifts      DispatchShift[]
+  dispatchAssignments DriverVehicleAssignment[]
+  dispatchRuns        DispatchRun[]
+  dispatchIncidents   DispatchIncident[]
+  domainEvents        DomainEvent[]
+  notifications       Notification[]
+  inferenceAuditLogs  InferenceAuditLog[]
+  agentRuns           AgentRun[]
+  agentExecutionMetrics AgentExecutionMetric[]
+  agentPolicyViolations AgentPolicyViolation[]
+  agentOperationalImpacts AgentOperationalImpact[]
+  decisionReports     DecisionReport[]
+  agentTriggerEvents  AgentTriggerEvent[]
+  subscriptions       OrganizationSubscription[]
+  usageRecords        OrganizationUsage[]
+  billingEvents       OrganizationBillingEvent[]
+  systemAlerts        SystemAlert[]
+  healthCheckLogs     HealthCheckLog[]
+  connectorInstances  ConnectorInstance[]
+  connectorActionLogs ConnectorActionLog[]
+  integrationShopifyStores IntegrationShopifyStore[]
+  integrationStripeAccounts IntegrationStripeAccount[]
+  shopifyOrders       ShopifyOrder[]
+  shopifyProducts     ShopifyProduct[]
+  shopifyCustomers    ShopifyCustomer[]
+  shopifySyncRuns     ShopifySyncRun[]
+  shopifyWebhookDeliveries ShopifyWebhookDelivery[]
+  shopifySyncCursors  ShopifySyncCursor[]
+  stripeCharges      StripeCharge[]
+  stripePaymentEvents StripePaymentEvent[]
+  stripeSyncRuns     StripeSyncRun[]
+  crmCustomerProfiles CrmCustomerProfile[]
+  crmCustomerSegmentSnapshots CrmCustomerSegmentSnapshot[]
+  aiSignals          AiSignal[]
+  aiInsights         AiInsight[]
+  aiDailySummaries   AiDailySummary[]
+  aiRecommendations  AiRecommendation[]
+  aiExecutiveSummaries AiExecutiveSummary[]
+  aiWeeklyDigests   AiWeeklyDigest[]
+  aiNotifications   AiNotification[]
+  aiOnboardingStatus AiOnboardingStatus?
+  actionExecutions  ActionExecution[]
+  actionExecutionsAudit ActionExecutionAudit[]
+  actionOutcomes    ActionOutcome[]
+  decisionLogs      DecisionLog[]
+  actionProposals    ActionProposal[]
+  actionProposalReviews ActionProposalReview[]
+  strategicPlans     StrategicPlan[]
+  strategicReviewReports StrategicReviewReport[]
+  workforceMembers    WorkforceMember[]
+  workforceProfileExtensions WorkforceProfileExtension[]
+  workforceAuthorizations WorkforceAuthorization[]
+  credentialDocuments CredentialDocument[]
+  workforceStatuses   WorkforceStatusHistory[]
+  assets              Asset[]                   @relation("AssetOrganization")
+  assetOwnerships     Asset[]                   @relation("AssetOwnerOrganization")
+  assetMaintenance    AssetMaintenanceRecord[]
+  assetStatuses       AssetStatusHistory[]
+  operationalZones    OperationalZone[]
+  workOrders          WorkOrder[]
+  schedulePlans       SchedulePlan[]
+  scheduleShifts      ScheduleShift[]
+  operationalIncidents OperationalIncident[]
+  incidentActions     IncidentAction[]
+  resourceAssignments ResourceAssignment[]
+
+  @@unique([slug])
+  @@index([status])
+  @@index([lifecycleStatus])
+  @@index([deletedAt])
+  @@map("organizations")
+}
+
+model SubscriptionPlan {
+  id            String                     @id @default(uuid()) @db.Uuid
+  name          String                     @db.VarChar(120)
+  code          String                     @db.VarChar(80)
+  description   String?                    @db.VarChar(500)
+  monthlyPrice  Decimal                    @db.Decimal(12, 2)
+  yearlyPrice   Decimal                    @db.Decimal(12, 2)
+  featureFlags  Json?
+  usageLimits   Json?
+  isActive      Boolean                    @default(true)
+  createdAt     DateTime                   @default(now())
+  updatedAt     DateTime                   @updatedAt
+  subscriptions OrganizationSubscription[]
+
+  @@unique([code])
+  @@index([isActive, createdAt])
+  @@map("subscription_plans")
+}
+
+model OrganizationSubscription {
+  id             String             @id @default(uuid()) @db.Uuid
+  organizationId String             @db.Uuid
+  planId         String             @db.Uuid
+  status         SubscriptionStatus @default(TRIALING)
+  trialEndsAt    DateTime?
+  billingCycle   BillingCycle       @default(MONTHLY)
+  startsAt       DateTime           @default(now())
+  endsAt         DateTime?
+  featureOverrides Json?
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime           @updatedAt
+  organization   Organization       @relation(fields: [organizationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  plan           SubscriptionPlan   @relation(fields: [planId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  billingEvents  OrganizationBillingEvent[]
+
+  @@index([organizationId, status, createdAt])
+  @@index([planId, status, createdAt])
+  @@index([trialEndsAt])
+  @@map("organization_subscriptions")
+}
+
+model OrganizationUsage {
+  id             String          @id @default(uuid()) @db.Uuid
+  organizationId String          @db.Uuid
+  metricType     UsageMetricType
+  metricValue    Int
+  periodStart    DateTime
+  periodEnd      DateTime
+  metadata       Json?
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  organization   Organization    @relation(fields: [organizationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@unique([organizationId, metricType, periodStart, periodEnd])
+  @@index([organizationId, metricType, periodStart, periodEnd])
+  @@map("organization_usage")
+}
+
+model OrganizationBillingEvent {
+  id               String           @id @default(uuid()) @db.Uuid
+  organizationId   String           @db.Uuid
+  subscriptionId   String?          @db.Uuid
+  eventType        BillingEventType
+  summary          String           @db.VarChar(500)
+  metadata         Json?
+  occurredAt       DateTime         @default(now())
+  createdAt        DateTime         @default(now())
+  organization     Organization     @relation(fields: [organizationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  subscription     OrganizationSubscription? @relation(fields: [subscriptionId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+
+  @@index([organizationId, eventType, occurredAt])
+  @@index([subscriptionId, occurredAt])
+  @@map("organization_billing_events")
+}
+
+model SystemAlert {
+  id                   String              @id @default(uuid()) @db.Uuid
+  organizationId       String?             @db.Uuid
+  sourceModule         String              @db.VarChar(80)
+  alertType            String              @db.VarChar(120)
+  severity             SystemAlertSeverity
+  status               SystemAlertStatus   @default(OPEN)
+  title                String              @db.VarChar(160)
+  summary              String              @db.VarChar(1000)
+  metadata             Json?
+  correlationId        String?             @db.VarChar(120)
+  acknowledgedByUserId String?             @db.Uuid
+  acknowledgedAt       DateTime?
+  resolvedByUserId     String?             @db.Uuid
+  resolvedAt           DateTime?
+  triggeredAt          DateTime            @default(now())
+  createdAt            DateTime            @default(now())
+  updatedAt            DateTime            @updatedAt
+  organization         Organization?       @relation(fields: [organizationId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  acknowledgedByUser   User?               @relation("SystemAlertAcknowledgedByUser", fields: [acknowledgedByUserId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  resolvedByUser       User?               @relation("SystemAlertResolvedByUser", fields: [resolvedByUserId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+
+  @@index([organizationId, status, severity, triggeredAt])
+  @@index([sourceModule, alertType, triggeredAt])
+  @@index([correlationId])
+  @@map("system_alerts")
+}
+
+model HealthCheckLog {
+  id             String            @id @default(uuid()) @db.Uuid
+  organizationId String?           @db.Uuid
+  checkType      String            @db.VarChar(120)
+  target         String            @db.VarChar(120)
+  status         HealthCheckStatus
+  responseTimeMs Int?
+  summary        String            @db.VarChar(500)
+  metadata       Json?
+  checkedAt      DateTime          @default(now())
+  organization   Organization?     @relation(fields: [organizationId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+
+  @@index([organizationId, checkType, checkedAt])
+  @@index([target, status, checkedAt])
+  @@map("health_check_logs")
+}
+
+model Department {
+  id             String           @id @default(uuid()) @db.Uuid
+  name           String           @db.VarChar(160)
+  code           String           @db.VarChar(40)
+  description    String?          @db.VarChar(500)
+  status         DepartmentStatus @default(ACTIVE)
+  organizationId String           @db.Uuid
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  deletedAt      DateTime?
+  organization   Organization     @relation(fields: [organizationId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  positions      Position[]
+  employees      Employee[]
+  workforceMembers WorkforceMember[]
+
+  @@unique([organizationId, code])
+  @@index([organizationId, status])
+  @@index([organizationId, name])
+  @@index([deletedAt])
+  @@map("departments")
+}
+
+model Position {
+  id             String         @id @default(uuid()) @db.Uuid
+  title          String         @db.VarChar(160)
+  code           String         @db.VarChar(40)
+  description    String?        @db.VarChar(500)
+  gradeLevel     String?        @db.VarChar(40)
+  status         PositionStatus @default(DRAFT)
+  organizationId String         @db.Uuid
+  departmentId   String?        @db.Uuid
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  deletedAt      DateTime?
+  organization   Organization   @relation(fields: [organizationId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  department     Department?    @relation(fields: [departmentId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  employees      Employee[]
+  workforceMembers WorkforceMember[]
+
+  @@unique([organizationId, code])
+  @@index([organizationId, status])
+  @@index([organizationId, departmentId])
+  @@index([deletedAt])
+  @@map("positions")
+}
+
+model Employee {
+  id               String           @id @default(uuid()) @db.Uuid
+  employeeCode     String           @db.VarChar(32)
+  firstName        String           @db.VarChar(100)
+  lastName         String           @db.VarChar(100)
+  workEmail        String           @db.VarChar(255)
+  phoneNumber      String?          @db.VarChar(30)
+  employmentStatus EmploymentStatus @default(ONBOARDING)
+  hireDate         DateTime         @db.Date
+  organizationId   String           @db.Uuid
+  departmentId     String?          @db.Uuid
+  positionId       String?          @db.Uuid
+  userId           String?          @unique @db.Uuid
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+  deletedAt        DateTime?
+  organization     Organization     @relation(fields: [organizationId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  department       Department?      @relation(fields: [departmentId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  position         Position?        @relation(fields: [positionId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  user             User?            @relation(fields: [userId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  driver           Driver?
+  workforceMember  WorkforceMember?
+
+  @@unique([organizationId, employeeCode])
+  @@unique([organizationId, workEmail])
+  @@index([organizationId, employmentStatus])
+  @@index([organizationId, departmentId])
+  @@index([organizationId, positionId])
+  @@index([deletedAt])
+  @@map("employees")
+}
+
+model User {
+  id                              String                    @id @default(uuid()) @db.Uuid
+  email                           String                    @db.VarChar(255)
+  passwordHash                    String                    @db.VarChar(255)
+  firstName                       String                    @db.VarChar(100)
+  lastName                        String                    @db.VarChar(100)
+  status                          UserStatus                @default(INVITED)
+  organizationId                  String                    @db.Uuid
+  createdAt                       DateTime                  @default(now())
+  updatedAt                       DateTime                  @updatedAt
+  deletedAt                       DateTime?
+  organization                    Organization              @relation(fields: [organizationId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  employee                        Employee?
+  workforceMember                 WorkforceMember?              @relation("WorkforceMemberUser")
+  userRoles                       UserRole[]
+  createdWorkflowInstances        WorkflowInstance[]        @relation("WorkflowInstanceCreatedByUser")
+  assignedWorkflowTasks           WorkflowTask[]            @relation("WorkflowTaskAssigneeUser")
+  taskActions                     TaskAction[]              @relation("TaskActionActorUser")
+  createdApprovalRequests         ApprovalRequest[]         @relation("ApprovalRequestRequestedByUser")
+  assignedApprovalSteps           ApprovalStep[]            @relation("ApprovalStepApproverUser")
+  approvalDecisions               ApprovalDecision[]        @relation("ApprovalDecisionActorUser")
+  driver                          Driver?                   @relation("DriverUser")
+  driverStatusChanges             DriverStatusHistory[]     @relation("DriverStatusChangedByUser")
+  fleetStatusChanges              FleetStatusHistory[]      @relation("FleetStatusChangedByUser")
+  supervisedDispatchShifts        DispatchShift[]           @relation("DispatchShiftSupervisorUser")
+  createdDriverVehicleAssignments DriverVehicleAssignment[] @relation("DriverVehicleAssignmentAssignedByUser")
+  reportedDispatchIncidents       DispatchIncident[]        @relation("DispatchIncidentReportedByUser")
+  triggeredDomainEvents           DomainEvent[]             @relation("DomainEventTriggeredByUser")
+  receivedNotifications           Notification[]            @relation("NotificationRecipientUser")
+  inferenceAuditLogs              InferenceAuditLog[]       @relation("InferenceAuditActorUser")
+  triggeredAgentRuns              AgentRun[]                @relation("AgentRunTriggeredByUser")
+  credentialDocumentVerifications CredentialDocument[]      @relation("CredentialDocumentVerifiedByUser")
+  workforceStatusChanges          WorkforceStatusHistory[]  @relation("WorkforceStatusChangedByUser")
+  assetStatusChanges2             AssetStatusHistory[]      @relation("AssetStatusChangedByUser")
+  createdWorkOrders               WorkOrder[]               @relation("WorkOrderCreatedByUser")
+  ownedSchedulePlans              SchedulePlan[]            @relation("SchedulePlanOwnerUser")
+  ownedScheduleShifts             ScheduleShift[]           @relation("ScheduleShiftOwnerUser")
+  reportedOperationalIncidents    OperationalIncident[]     @relation("OperationalIncidentReportedByUser")
+  assignedOperationalIncidents    OperationalIncident[]     @relation("OperationalIncidentAssignedToUser")
+  incidentActionsPerformed        IncidentAction[]          @relation("IncidentActionPerformedByUser")
+  resourceAssignmentsCreated      ResourceAssignment[]      @relation("ResourceAssignmentAssignedByUser")
+  connectorInstancesCreated       ConnectorInstance[]       @relation("ConnectorInstanceCreatedByUser")
+  acknowledgedSystemAlerts        SystemAlert[]             @relation("SystemAlertAcknowledgedByUser")
+  resolvedSystemAlerts            SystemAlert[]             @relation("SystemAlertResolvedByUser")
+  requestedExecutions             ActionExecution[]         @relation("ActionExecutionRequestedByUser")
+  approvedExecutions              ActionExecution[]         @relation("ActionExecutionApprovedByUser")
+  decisionLogs                    DecisionLog[]
+  strategicPlansCreated           StrategicPlan[]           @relation("StrategicPlanCreatedByUser")
+
+  @@unique([email])
+  @@index([organizationId, status])
+  @@index([deletedAt])
+  @@map("users")
+}
+
+model Role {
+  id              String           @id @default(uuid()) @db.Uuid
+  name            String           @db.VarChar(120)
+  code            String           @db.VarChar(80)
+  description     String?          @db.VarChar(500)
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  userRoles       UserRole[]
+  rolePermissions RolePermission[]
+
+  @@unique([code])
+  @@index([name])
+  @@map("roles")
+}
+
+model Permission {
+  id              String           @id @default(uuid()) @db.Uuid
+  name            String           @db.VarChar(120)
+  code            String           @db.VarChar(120)
+  description     String?          @db.VarChar(500)
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  rolePermissions RolePermission[]
+
+  @@unique([code])
+  @@index([name])
+  @@map("permissions")
+}
+
+model UserRole {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @db.Uuid
+  roleId    String   @db.Uuid
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  role      Role     @relation(fields: [roleId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@unique([userId, roleId])
+  @@index([roleId])
+  @@map("user_roles")
+}
+
+model RolePermission {
+  id           String     @id @default(uuid()) @db.Uuid
+  roleId       String     @db.Uuid
+  permissionId String     @db.Uuid
+  createdAt    DateTime   @default(now())
+  role         Role       @relation(fields: [roleId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  permission   Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@unique([roleId, permissionId])
+  @@index([permissionId])
+  @@map("role_permissions")
+}
+
+model WorkflowDefinition {
+  id              String             @id @default(uuid()) @db.Uuid
+  code            String             @db.VarChar(100)
+  name            String             @db.VarChar(160)
+  description     String?            @db.VarChar(500)
+  moduleKey       String             @db.VarChar(80)
+  version         Int                @default(1)
+  isActive        Boolean            @default(true)
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
+  instances       WorkflowInstance[]
+  escalationRules EscalationRule[]
+
+  @@unique([code])
+  @@index([moduleKey, isActive])
+  @@map("workflow_definitions")
+}
+
+model WorkflowInstance {
+  id               String                 @id @default(uuid()) @db.Uuid
+  definitionId     String                 @db.Uuid
+  organizationId   String                 @db.Uuid
+  entityType       String                 @db.VarChar(80)
+  entityId         String                 @db.VarChar(100)
+  status           WorkflowInstanceStatus @default(ACTIVE)
+  startedAt        DateTime               @default(now())
+  completedAt      DateTime?
+  cancelledAt      DateTime?
+  createdByUserId  String                 @db.Uuid
+  createdAt        DateTime               @default(now())
+  updatedAt        DateTime               @updatedAt
+  definition       WorkflowDefinition     @relation(fields: [definitionId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  organization     Organization           @relation(fields: [organizationId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  createdByUser    User                   @relation("WorkflowInstanceCreatedByUser", fields: [createdByUserId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  tasks            WorkflowTask[]
+  approvalRequests ApprovalRequest[]
+
+  @@index([definitionId, status])
+  @@index([organizationId, status])
+  @@index([entityType, entityId])
+  @@index([createdByUserId])
+  @@map("workflow_instances")
+}
+
+model WorkflowTask {
+  id               String             @id @default(uuid()) @db.Uuid
+  instanceId       String             @db.Uuid
+  taskKey          String             @db.VarChar(100)
+  title            String             @db.VarChar(160)
+  description      String?            @db.VarChar(500)
+  status           WorkflowTaskStatus @default(PENDING)
+  assigneeUserId   String?            @db.Uuid
+  assigneeRoleCode String?            @db.VarChar(80)
+  dueAt            DateTime?
+  completedAt      DateTime?
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+  instance         WorkflowInstance   @relation(fields: [instanceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  assigneeUser     User?              @relation("WorkflowTaskAssigneeUser", fields: [assigneeUserId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  actions          TaskAction[]
+
+  @@index([instanceId, status])
+  @@index([assigneeUserId, status])
+  @@index([assigneeRoleCode, status])
+  @@index([dueAt])
+  @@map("workflow_tasks")
+}
+
+model TaskAction {
+  id          String         @id @default(uuid()) @db.Uuid
+  taskId      String         @db.Uuid
+  actionType  TaskActionType
+  actionLabel String         @db.VarChar(100)
+  actorUserId String         @db.Uuid
+  comment     String?        @db.VarChar(1000)
+  metadata    Json?
+  createdAt   DateTime       @default(now())
+  task        WorkflowTask   @relation(fields: [taskId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  actorUser   User           @relation("TaskActionActorUser", fields: [actorUserId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+
+  @@index([taskId, createdAt])
+  @@index([actorUserId])
+  @@map("task_actions")
+}
+
+model EscalationRule {
+  id                   String             @id @default(uuid()) @db.Uuid
+  workflowDefinitionId String             @db.Uuid
+  taskKey              String             @db.VarChar(100)
+  escalationType       EscalationType
+  thresholdMinutes     Int
+  targetRoleCode       String?            @db.VarChar(80)
+  isActive             Boolean            @default(true)
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @updatedAt
+  workflowDefinition   WorkflowDefinition @relation(fields: [workflowDefinitionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@index([workflowDefinitionId, taskKey, isActive])
+  @@map("escalation_rules")
+}
+
+model ApprovalRequest {
+  id                 String                @id @default(uuid()) @db.Uuid
+  organizationId     String                @db.Uuid
+  workflowInstanceId String?               @db.Uuid
+  entityType         String                @db.VarChar(80)
+  entityId           String                @db.VarChar(100)
+  title              String                @db.VarChar(160)
+  description        String?               @db.VarChar(500)
+  status             ApprovalRequestStatus @default(PENDING)
+  requestedByUserId  String                @db.Uuid
+  submittedAt        DateTime              @default(now())
+  resolvedAt         DateTime?
+  createdAt          DateTime              @default(now())
+  updatedAt          DateTime              @updatedAt
+  organization       Organization          @relation(fields: [organizationId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  workflowInstance   WorkflowInstance?     @relation(fields: [workflowInstanceId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  requestedByUser    User                  @relation("ApprovalRequestRequestedByUser", fields: [requestedByUserId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  steps              ApprovalStep[]
+
+  @@index([organizationId, status])
+  @@index([workflowInstanceId])
+  @@index([entityType, entityId])
+  @@index([requestedByUserId])
+  @@map("approval_requests")
+}
+
+model ApprovalStep {
+  id                String             @id @default(uuid()) @db.Uuid
+  approvalRequestId String             @db.Uuid
+  stepKey           String             @db.VarChar(100)
+  title             String             @db.VarChar(160)
+  description       String?            @db.VarChar(500)
+  sequenceOrder     Int
+  status            ApprovalStepStatus @default(PENDING)
+  approverUserId    String?            @db.Uuid
+  approverRoleCode  String?            @db.VarChar(80)
+  dueAt             DateTime?
+  resolvedAt        DateTime?
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  approvalRequest   ApprovalRequest    @relation(fields: [approvalRequestId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  approverUser      User?              @relation("ApprovalStepApproverUser", fields: [approverUserId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  decisions         ApprovalDecision[]
+
+  @@unique([approvalRequestId, sequenceOrder])
+  @@index([approvalRequestId, status])
+  @@index([approverUserId, status])
+  @@index([approverRoleCode, status])
+  @@map("approval_steps")
+}
+
+model ApprovalDecision {
+  id             String               @id @default(uuid()) @db.Uuid
+  approvalStepId String               @db.Uuid
+  actorUserId    String               @db.Uuid
+  decisionType   ApprovalDecisionType
+  comment        String?              @db.VarChar(1000)
+  metadata       Json?
+  createdAt      DateTime             @default(now())
+  approvalStep   ApprovalStep         @relation(fields: [approvalStepId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  actorUser      User                 @relation("ApprovalDecisionActorUser", fields: [actorUserId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+
+  @@index([approvalStepId, createdAt])
+  @@index([actorUserId])
+  @@map("approval_decisions")
+}
+
+model Driver {
+  id                String                    @id @default(uuid()) @db.Uuid
+  organizationId    String                    @db.Uuid
+  employeeId        String?                   @unique @db.Uuid
+  userId            String?                   @unique @db.Uuid
+  driverCode        String                    @db.VarChar(32)
+  firstName         String                    @db.VarChar(100)
+  lastName          String                    @db.VarChar(100)
+  workEmail         String?                   @db.VarChar(255)
+  phoneNumber       String?                   @db.VarChar(30)
+  licenseNumber     String                    @db.VarChar(80)
+  licenseIssuedAt   DateTime?                 @db.Date
+  licenseExpiresAt  DateTime?                 @db.Date
+  onboardingStatus  DriverOnboardingStatus    @default(PENDING)
+  operationalStatus DriverOperationalStatus   @default(INACTIVE)
+  complianceStatus  DriverComplianceStatus    @default(PENDING)
+  assignmentStatus  DriverAssignmentStatus    @default(UNAVAILABLE)
+  joinedAt          DateTime                  @db.Date
+  suspendedAt       DateTime?
+  deactivatedAt     DateTime?
+  createdAt         DateTime                  @default(now())
+  updatedAt         DateTime                  @updatedAt
+  deletedAt         DateTime?
+  organization      Organization              @relation(fields: [organizationId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  employee          Employee?                 @relation(fields: [employeeId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  user              User?                     @relation("DriverUser", fields: [userId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  documents         DriverDocument[]
+  statusHistory     DriverStatusHistory[]
+  assignments       DriverVehicleAssignment[]
+
+  @@unique([organizationId, driverCode])
+  @@unique([organizationId, licenseNumber])
+  @@index([organizationId, onboardingStatus])
+  @@index([organizationId, operationalStatus])
+  @@index([organizationId, complianceStatus])
+  @@index([organizationId, assignmentStatus])
+  @@index([deletedAt])
+  @@map("drivers")
+}
+
+model DriverDocument {
+  id                 String                     @id @default(uuid()) @db.Uuid
+  driverId           String                     @db.Uuid
+  documentType       DriverDocumentType
+  documentNumber     String?                    @db.VarChar(100)
+  issuedAt           DateTime?                  @db.Date
+  expiresAt          DateTime?                  @db.Date
+  verificationStatus DocumentVerificationStatus @default(PENDING)
+  notes              String?                    @db.VarChar(1000)
+  createdAt          DateTime                   @default(now())
+  updatedAt          DateTime                   @updatedAt
+  driver             Driver                     @relation(fields: [driverId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@index([driverId, documentType])
+  @@index([driverId, verificationStatus])
+  @@index([expiresAt])
+  @@map("driver_documents")
+}
+
+model DriverStatusHistory {
+  id              String               @id @default(uuid()) @db.Uuid
+  driverId        String               @db.Uuid
+  statusCategory  DriverStatusCategory
+  previousValue   String?              @db.VarChar(80)
+  newValue        String               @db.VarChar(80)
+  changedByUserId String?              @db.Uuid
+  reason          String?              @db.VarChar(500)
+  createdAt       DateTime             @default(now())
+  driver          Driver               @relation(fields: [driverId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  changedByUser   User?                @relation("DriverStatusChangedByUser", fields: [changedByUserId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+
+  @@index([driverId, createdAt])
+  @@index([statusCategory, createdAt])
+  @@index([changedByUserId])
+  @@map("driver_status_history")
+}
+
+model FleetVehicle {
+  id                    String                    @id @default(uuid()) @db.Uuid
+  organizationId        String                    @db.Uuid
+  vehicleCode           String                    @db.VarChar(32)
+  plateNumber           String                    @db.VarChar(40)
+  vin                   String?                   @db.VarChar(80)
+  make                  String                    @db.VarChar(100)
+  model                 String                    @db.VarChar(100)
+  modelYear             Int
+  color                 String?                   @db.VarChar(40)
+  vehicleClass          FleetVehicleClass
+  registrationNumber    String?                   @db.VarChar(80)
+  registrationIssuedAt  DateTime?                 @db.Date
+  registrationExpiresAt DateTime?                 @db.Date
+  insurancePolicyNumber String?                   @db.VarChar(80)
+  insuranceExpiresAt    DateTime?                 @db.Date
+  onboardingStatus      FleetOnboardingStatus     @default(PENDING)
+  operationalStatus     FleetOperationalStatus    @default(INACTIVE)
+  complianceStatus      FleetComplianceStatus     @default(PENDING)
+  assignmentStatus      FleetAssignmentStatus     @default(UNAVAILABLE)
+  joinedAt              DateTime                  @db.Date
+  decommissionedAt      DateTime?
+  createdAt             DateTime                  @default(now())
+  updatedAt             DateTime                  @updatedAt
+  deletedAt             DateTime?
+  organization          Organization              @relation(fields: [organizationId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  maintenanceRecords    FleetMaintenanceRecord[]
+  statusHistory         FleetStatusHistory[]
+  assignments           DriverVehicleAssignment[]
+
+  @@unique([organizationId, vehicleCode])
+  @@unique([organizationId, plateNumber])
+  @@unique([organizationId, vin])
+  @@index([organizationId, vehicleClass])
+  @@index([organizationId, onboardingStatus])
+  @@index([organizationId, operationalStatus])
+  @@index([organizationId, complianceStatus])
+  @@index([organizationId, assignmentStatus])
+  @@index([deletedAt])
+  @@map("fleet_vehicles")
+}
+
+model FleetMaintenanceRecord {
+  id              String                 @id @default(uuid()) @db.Uuid
+  vehicleId       String                 @db.Uuid
+  maintenanceType FleetMaintenanceType
+  title           String                 @db.VarChar(160)
+  description     String?                @db.VarChar(1000)
+  scheduledAt     DateTime?
+  completedAt     DateTime?
+  status          FleetMaintenanceStatus @default(SCHEDULED)
+  vendorName      String?                @db.VarChar(160)
+  costAmount      Decimal?               @db.Decimal(12, 2)
+  notes           String?                @db.VarChar(1000)
+  createdAt       DateTime               @default(now())
+  updatedAt       DateTime               @updatedAt
+  vehicle         FleetVehicle           @relation(fields: [vehicleId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@index([vehicleId, status])
+  @@index([scheduledAt, status])
+  @@map("fleet_maintenance_records")
+}
+
+model FleetStatusHistory {
+  id              String              @id @default(uuid()) @db.Uuid
+  vehicleId       String              @db.Uuid
+  statusCategory  FleetStatusCategory
+  previousValue   String?             @db.VarChar(80)
+  newValue        String              @db.VarChar(80)
+  changedByUserId String?             @db.Uuid
+  reason          String?             @db.VarChar(500)
+  createdAt       DateTime            @default(now())
+  vehicle         FleetVehicle        @relation(fields: [vehicleId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  changedByUser   User?               @relation("FleetStatusChangedByUser", fields: [changedByUserId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+
+  @@index([vehicleId, createdAt])
+  @@index([statusCategory, createdAt])
+  @@index([changedByUserId])
+  @@map("fleet_status_history")
+}
+
+model DispatchZone {
+  id             String                    @id @default(uuid()) @db.Uuid
+  organizationId String                    @db.Uuid
+  code           String                    @db.VarChar(40)
+  name           String                    @db.VarChar(160)
+  description    String?                   @db.VarChar(500)
+  isActive       Boolean                   @default(true)
+  createdAt      DateTime                  @default(now())
+  updatedAt      DateTime                  @updatedAt
+  organization   Organization              @relation(fields: [organizationId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  shifts         DispatchShift[]
+  assignments    DriverVehicleAssignment[]
+  runs           DispatchRun[]
+
+  @@unique([organizationId, code])
+  @@index([organizationId, isActive])
+  @@index([organizationId, name])
+  @@map("dispatch_zones")
+}
+
+model DispatchShift {
+  id               String                    @id @default(uuid()) @db.Uuid
+  organizationId   String                    @db.Uuid
+  code             String                    @db.VarChar(40)
+  title            String                    @db.VarChar(160)
+  description      String?                   @db.VarChar(500)
+  zoneId           String?                   @db.Uuid
+  startsAt         DateTime
+  endsAt           DateTime
+  status           DispatchShiftStatus       @default(SCHEDULED)
+  supervisorUserId String?                   @db.Uuid
+  createdAt        DateTime                  @default(now())
+  updatedAt        DateTime                  @updatedAt
+  deletedAt        DateTime?
+  organization     Organization              @relation(fields: [organizationId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  zone             DispatchZone?             @relation(fields: [zoneId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  supervisorUser   User?                     @relation("DispatchShiftSupervisorUser", fields: [supervisorUserId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  assignments      DriverVehicleAssignment[]
+
+  @@unique([organizationId, code])
+  @@index([organizationId, status])
+  @@index([zoneId, status])
+  @@index([deletedAt])
+  @@map("dispatch_shifts")
+}
+
+model DriverVehicleAssignment {
+  id               String                        @id @default(uuid()) @db.Uuid
+  organizationId   String                        @db.Uuid
+  driverId         String                        @db.Uuid
+  vehicleId        String                        @db.Uuid
+  zoneId           String?                       @db.Uuid
+  shiftId          String?                       @db.Uuid
+  assignmentStatus DriverVehicleAssignmentStatus @default(ASSIGNED)
+  assignedAt       DateTime                      @default(now())
+  releasedAt       DateTime?
+  assignedByUserId String?                       @db.Uuid
+  notes            String?                       @db.VarChar(1000)
+  createdAt        DateTime                      @default(now())
+  updatedAt        DateTime                      @updatedAt
+  organization     Organization                  @relation(fields: [organizationId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  driver           Driver                        @relation(fields: [driverId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  vehicle          FleetVehicle                  @relation(fields: [vehicleId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  zone             DispatchZone?                 @relation(fields: [zoneId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  shift            DispatchShift?                @relation(fields: [shiftId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  assignedByUser   User?                         @relation("DriverVehicleAssignmentAssignedByUser", fields: [assignedByUserId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  runs             DispatchRun[]
+  incidents        DispatchIncident[]
+
+  @@index([organizationId, assignmentStatus])
+  @@index([driverId, assignmentStatus])
+  @@index([vehicleId, assignmentStatus])
+  @@index([zoneId, assignmentStatus])
+  @@index([shiftId, assignmentStatus])
+  @@map("driver_vehicle_assignments")
+}
+
+model DispatchRun {
+  id             String                  @id @default(uuid()) @db.Uuid
+  organizationId String                  @db.Uuid
+  assignmentId   String                  @db.Uuid
+  zoneId         String?                 @db.Uuid
+  runCode        String                  @db.VarChar(40)
+  dispatchStatus DispatchRunStatus       @default(CREATED)
+  startedAt      DateTime?
+  completedAt    DateTime?
+  cancelledAt    DateTime?
+  createdAt      DateTime                @default(now())
+  updatedAt      DateTime                @updatedAt
+  organization   Organization            @relation(fields: [organizationId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  assignment     DriverVehicleAssignment @relation(fields: [assignmentId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  zone           DispatchZone?           @relation(fields: [zoneId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  incidents      DispatchIncident[]
+
+  @@unique([organizationId, runCode])
+  @@index([organizationId, dispatchStatus])
+  @@index([assignmentId, dispatchStatus])
+  @@index([zoneId, dispatchStatus])
+  @@map("dispatch_runs")
+}
+
+model DispatchIncident {
+  id               String                   @id @default(uuid()) @db.Uuid
+  organizationId   String                   @db.Uuid
+  runId            String?                  @db.Uuid
+  assignmentId     String?                  @db.Uuid
+  incidentCode     String                   @db.VarChar(40)
+  incidentType     DispatchIncidentType
+  severity         DispatchIncidentSeverity
+  title            String                   @db.VarChar(160)
+  description      String?                  @db.VarChar(1000)
+  status           DispatchIncidentStatus   @default(OPEN)
+  reportedByUserId String?                  @db.Uuid
+  reportedAt       DateTime                 @default(now())
+  resolvedAt       DateTime?
+  createdAt        DateTime                 @default(now())
+  updatedAt        DateTime                 @updatedAt
+  organization     Organization             @relation(fields: [organizationId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  run              DispatchRun?             @relation(fields: [runId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  assignment       DriverVehicleAssignment? @relation(fields: [assignmentId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  reportedByUser   User?                    @relation("DispatchIncidentReportedByUser", fields: [reportedByUserId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+
+  @@unique([organizationId, incidentCode])
+  @@index([organizationId, status])
+  @@index([runId, status])
+  @@index([assignmentId, status])
+  @@index([severity, status])
+  @@map("dispatch_incidents")
+}
+
+model AuditLog {
+  id             String   @id @default(uuid()) @db.Uuid
+  organizationId String?  @db.Uuid
+  actorUserId    String?  @db.Uuid
+  action         String   @db.VarChar(120)
+  entityType     String   @db.VarChar(80)
+  entityId       String?  @db.VarChar(100)
+  summary        String   @db.VarChar(255)
+  metadata       Json?
+  requestId      String?  @db.VarChar(100)
+  createdAt      DateTime @default(now())
+
+  @@index([organizationId, createdAt])
+  @@index([actorUserId, createdAt])
+  @@index([entityType, entityId])
+  @@index([action, createdAt])
+  @@index([requestId])
+  @@map("audit_logs")
+}
+
+model DomainEvent {
+  id                String                      @id @default(uuid()) @db.Uuid
+  organizationId    String?                     @db.Uuid
+  eventType         String                      @db.VarChar(120)
+  aggregateType     String                      @db.VarChar(80)
+  aggregateId       String?                     @db.VarChar(100)
+  actorType         DomainActorType?
+  actorId           String?                     @db.VarChar(100)
+  sourceModule      String?                     @db.VarChar(80)
+  payload           Json
+  metadata          Json?
+  triggeredByUserId String?                     @db.Uuid
+  occurredAt        DateTime                    @default(now())
+  publishedAt       DateTime?
+  processingStatus  DomainEventProcessingStatus @default(PENDING)
+  correlationId     String?                     @db.VarChar(100)
+  causationId       String?                     @db.VarChar(100)
+  createdAt         DateTime                    @default(now())
+  organization      Organization?               @relation(fields: [organizationId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  triggeredByUser   User?                       @relation("DomainEventTriggeredByUser", fields: [triggeredByUserId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+
+  @@index([organizationId, occurredAt])
+  @@index([eventType, occurredAt])
+  @@index([aggregateType, aggregateId])
+  @@index([processingStatus, occurredAt])
+  @@index([publishedAt])
+  @@index([correlationId])
+  @@index([triggeredByUserId, occurredAt])
+  @@map("domain_events")
+}
+
+model TriggerRule {
+  id                String            @id @default(uuid()) @db.Uuid
+  organizationId    String?           @db.Uuid
+  name              String            @db.VarChar(160)
+  description       String?           @db.VarChar(500)
+  eventType         String            @db.VarChar(120)
+  aggregateType     String?           @db.VarChar(80)
+  conditionConfig   Json?
+  actionType        TriggerActionType
+  actionTarget      String?           @db.VarChar(160)
+  actionConfig      Json?
+  priority          Int               @default(100)
+  isEnabled         Boolean           @default(true)
+  cooldownSeconds   Int?
+  dedupeKeyStrategy String?           @db.VarChar(120)
+  createdByUserId   String?           @db.Uuid
+  metadata          Json?
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+
+  @@index([organizationId, eventType, isEnabled])
+  @@index([aggregateType, eventType])
+  @@index([priority, isEnabled])
+  @@index([createdByUserId])
+  @@map("trigger_rules")
+}
+
+model TriggerExecutionLog {
+  id                 String                 @id @default(uuid()) @db.Uuid
+  triggerRuleId      String                 @db.Uuid
+  domainEventId      String                 @db.Uuid
+  organizationId     String?                @db.Uuid
+  executionStatus    TriggerExecutionStatus @default(PENDING)
+  resultSummary      String?                @db.VarChar(500)
+  workflowInstanceId String?                @db.Uuid
+  approvalRequestId  String?                @db.Uuid
+  agentRunId         String?                @db.Uuid
+  notificationId     String?                @db.Uuid
+  dedupeKey          String?                @db.VarChar(200)
+  startedAt          DateTime               @default(now())
+  finishedAt         DateTime?
+  errorMessage       String?                @db.VarChar(1000)
+  metadata           Json?
+
+  @@index([triggerRuleId, startedAt])
+  @@index([domainEventId, startedAt])
+  @@index([organizationId, startedAt])
+  @@index([executionStatus, startedAt])
+  @@index([dedupeKey, startedAt])
+  @@map("trigger_execution_logs")
+}
+
+model ActionExecutionLog {
+  id                String                @id @default(uuid()) @db.Uuid
+  proposalId        String                @db.Uuid
+  organizationId    String?               @db.Uuid
+  actionType        String                @db.VarChar(120)
+  executionStatus   ActionExecutionStatus @default(PENDING)
+  idempotencyKey    String                @db.VarChar(200)
+  approvalRequestId String?               @db.Uuid
+  executedByUserId  String?               @db.Uuid
+  targetEntityType  String?               @db.VarChar(80)
+  targetEntityId    String?               @db.VarChar(100)
+  resultSummary     String?               @db.VarChar(500)
+  errorMessage      String?               @db.VarChar(1000)
+  metadata          Json?
+  startedAt         DateTime              @default(now())
+  finishedAt        DateTime?
+
+  @@unique([idempotencyKey])
+  @@index([proposalId, startedAt])
+  @@index([organizationId, startedAt])
+  @@index([executionStatus, startedAt])
+  @@index([approvalRequestId])
+  @@map("action_execution_logs")
+}
+
+model Notification {
+  id              String               @id @default(uuid()) @db.Uuid
+  organizationId  String?              @db.Uuid
+  recipientUserId String               @db.Uuid
+  category        NotificationCategory
+  title           String               @db.VarChar(160)
+  message         String               @db.VarChar(500)
+  severity        NotificationSeverity @default(INFO)
+  status          NotificationStatus   @default(UNREAD)
+  actionUrl       String?              @db.VarChar(255)
+  entityType      String?              @db.VarChar(80)
+  entityId        String?              @db.VarChar(100)
+  metadata        Json?
+  readAt          DateTime?
+  createdAt       DateTime             @default(now())
+  updatedAt       DateTime             @updatedAt
+  organization    Organization?        @relation(fields: [organizationId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  recipientUser   User                 @relation("NotificationRecipientUser", fields: [recipientUserId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@index([recipientUserId, status, createdAt])
+  @@index([organizationId, category, createdAt])
+  @@index([severity, status, createdAt])
+  @@index([entityType, entityId])
+  @@map("notifications")
+}
+
+model InferenceAuditLog {
+  id                String          @id @default(uuid()) @db.Uuid
+  organizationId    String?         @db.Uuid
+  agentRunId        String?         @db.Uuid
+  actorUserId       String?         @db.Uuid
+  moduleKey         String          @db.VarChar(80)
+  useCase           String          @db.VarChar(120)
+  model             String          @db.VarChar(120)
+  promptTemplateKey String          @db.VarChar(120)
+  inputSummary      String          @db.VarChar(2000)
+  outputSummary     String?         @db.VarChar(2000)
+  rawRequest        Json?
+  rawResponse       Json?
+  status            InferenceStatus
+  latencyMs         Int?
+  errorMessage      String?         @db.VarChar(1000)
+  createdAt         DateTime        @default(now())
+  organization      Organization?   @relation(fields: [organizationId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  agentRun          AgentRun?       @relation(fields: [agentRunId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  actorUser         User?           @relation("InferenceAuditActorUser", fields: [actorUserId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+
+  @@index([organizationId, createdAt])
+  @@index([agentRunId, createdAt])
+  @@index([actorUserId, createdAt])
+  @@index([moduleKey, useCase, createdAt])
+  @@index([status, createdAt])
+  @@map("inference_audit_logs")
+}
+
+model AgentDefinition {
+  id          String            @id @default(uuid()) @db.Uuid
+  code        String            @db.VarChar(120)
+  name        String            @db.VarChar(160)
+  description String?           @db.VarChar(500)
+  category    AgentCategory
+  isActive    Boolean           @default(true)
+  version     Int               @default(1)
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+  runs        AgentRun[]
+  policyRules AgentPolicyRule[]
+
+  @@unique([code])
+  @@index([category, isActive])
+  @@map("agent_definitions")
+}
+
+model AgentRun {
+  id                String                @id @default(uuid()) @db.Uuid
+  organizationId    String?               @db.Uuid
+  agentDefinitionId String                @db.Uuid
+  triggeredByUserId String?               @db.Uuid
+  triggerType       AgentTriggerType      @default(API)
+  triggerSource     String?               @db.VarChar(120)
+  status            AgentRunStatus        @default(PENDING)
+  startedAt         DateTime              @default(now())
+  completedAt       DateTime?
+  failedAt          DateTime?
+  cancelledAt       DateTime?
+  summary           String?               @db.VarChar(1000)
+  errorMessage      String?               @db.VarChar(1000)
+  requestId         String?               @db.VarChar(100)
+  entityType        String?               @db.VarChar(80)
+  entityId          String?               @db.VarChar(100)
+  inputContext      Json?
+  createdAt         DateTime              @default(now())
+  updatedAt         DateTime              @updatedAt
+  organization      Organization?         @relation(fields: [organizationId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  agentDefinition   AgentDefinition       @relation(fields: [agentDefinitionId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  triggeredByUser   User?                 @relation("AgentRunTriggeredByUser", fields: [triggeredByUserId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  observations      AgentObservation[]
+  decisions         AgentDecision[]
+  actionProposals   AgentActionProposal[]
+  verificationResults AgentVerificationResult[]
+  feedbackRecords   AgentFeedback[]
+  evaluationResults AgentEvaluationResult[]
+  inferenceAuditLogs InferenceAuditLog[]
+  executionMetrics   AgentExecutionMetric[]
+  policyViolations   AgentPolicyViolation[]
+  operationalImpacts AgentOperationalImpact[]
+  decisionReports    DecisionReport[]
+  triggerEvents      AgentTriggerEvent[]
+
+  @@index([organizationId, status, createdAt])
+  @@index([agentDefinitionId, status, createdAt])
+  @@index([triggeredByUserId, createdAt])
+  @@index([requestId])
+  @@index([entityType, entityId])
+  @@map("agent_runs")
+}
+
+model AgentTriggerEvent {
+  id            String                  @id @default(uuid()) @db.Uuid
+  organizationId String                 @db.Uuid
+  agentRunId    String?                 @db.Uuid
+  agentKey      String                  @db.VarChar(120)
+  triggerType   AgentTriggerEventType
+  source        AgentTriggerEventSource
+  sourceId      String?                 @db.VarChar(120)
+  reason        String                  @db.VarChar(1000)
+  dedupeKey     String                  @db.VarChar(240)
+  status        AgentTriggerEventStatus @default(PENDING)
+  metadata      Json?
+  errorMessage  String?                 @db.VarChar(1000)
+  createdAt     DateTime                @default(now())
+  processedAt   DateTime?
+  organization  Organization            @relation(fields: [organizationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  agentRun      AgentRun?               @relation(fields: [agentRunId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+
+  @@index([organizationId, createdAt])
+  @@index([agentKey, triggerType, createdAt])
+  @@index([dedupeKey, createdAt])
+  @@index([status, createdAt])
+  @@map("agent_trigger_events")
+}
+
+model AgentObservation {
+  id              String               @id @default(uuid()) @db.Uuid
+  agentRunId      String               @db.Uuid
+  observationType AgentObservationType
+  summary         String               @db.VarChar(500)
+  metadata        Json?
+  createdAt       DateTime             @default(now())
+  agentRun        AgentRun             @relation(fields: [agentRunId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@index([agentRunId, createdAt])
+  @@index([observationType, createdAt])
+  @@map("agent_observations")
+}
+
+model AgentDecision {
+  id           String               @id @default(uuid()) @db.Uuid
+  agentRunId   String               @db.Uuid
+  decisionType AgentDecisionType
+  summary      String               @db.VarChar(1000)
+  rationale    String?              @db.VarChar(1000)
+  confidence   AgentConfidenceLevel
+  metadata     Json?
+  createdAt    DateTime             @default(now())
+  agentRun     AgentRun             @relation(fields: [agentRunId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  decisionReports DecisionReport[]
+
+  @@index([agentRunId, createdAt])
+  @@index([decisionType, createdAt])
+  @@map("agent_decisions")
+}
+
+model DecisionReport {
+  id              String             @id @default(uuid()) @db.Uuid
+  organizationId  String?            @db.Uuid
+  agentRunId      String             @db.Uuid
+  agentDecisionId String?            @db.Uuid
+  reportType      DecisionReportType
+  title           String             @db.VarChar(200)
+  summary         String             @db.VarChar(2000)
+  findings        Json?
+  evidence        Json?
+  riskLevel       AgentRiskLevel
+  recommendations Json?
+  confidenceScore Float
+  supportingData  Json?
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
+  organization    Organization?      @relation(fields: [organizationId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  agentRun        AgentRun           @relation(fields: [agentRunId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  agentDecision   AgentDecision?     @relation(fields: [agentDecisionId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+
+  @@index([organizationId, reportType, createdAt])
+  @@index([agentRunId, createdAt])
+  @@index([agentDecisionId, createdAt])
+  @@map("decision_reports")
+}
+
+model ConnectorDefinition {
+  id           String            @id @default(uuid()) @db.Uuid
+  key          String            @db.VarChar(120)
+  name         String            @db.VarChar(160)
+  category     ConnectorCategory
+  authType     ConnectorAuthType
+  capabilities Json?
+  isSystem     Boolean           @default(false)
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+  instances    ConnectorInstance[]
+
+  @@unique([key])
+  @@index([category, authType])
+  @@map("connector_definitions")
+}
+
+model ConnectorInstance {
+  id                    String                  @id @default(uuid()) @db.Uuid
+  organizationId        String?                 @db.Uuid
+  connectorDefinitionId String                  @db.Uuid
+  displayName           String                  @db.VarChar(160)
+  status                ConnectorInstanceStatus @default(PENDING)
+  configuration         Json?
+  createdByUserId       String?                 @db.Uuid
+  createdAt             DateTime                @default(now())
+  updatedAt             DateTime                @updatedAt
+  organization          Organization?           @relation(fields: [organizationId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  connectorDefinition   ConnectorDefinition     @relation(fields: [connectorDefinitionId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  createdByUser         User?                   @relation("ConnectorInstanceCreatedByUser", fields: [createdByUserId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  credentials           ConnectorCredential[]
+  syncJobs              ConnectorSyncJob[]
+  actionLogs            ConnectorActionLog[]
+
+  @@index([organizationId, status, createdAt])
+  @@index([connectorDefinitionId, status])
+  @@index([createdByUserId, createdAt])
+  @@map("connector_instances")
+}
+
+model ConnectorCredential {
+  id                  String            @id @default(uuid()) @db.Uuid
+  connectorInstanceId String            @db.Uuid
+  credentialType      ConnectorAuthType
+  encryptedSecret     String            @db.Text
+  expiresAt           DateTime?
+  createdAt           DateTime          @default(now())
+  updatedAt           DateTime          @updatedAt
+  connectorInstance   ConnectorInstance @relation(fields: [connectorInstanceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@index([connectorInstanceId, credentialType])
+  @@index([expiresAt])
+  @@map("connector_credentials")
+}
+
+model ConnectorSyncJob {
+  id                  String                @id @default(uuid()) @db.Uuid
+  connectorInstanceId String                @db.Uuid
+  jobType             String                @db.VarChar(120)
+  status              ConnectorSyncJobStatus @default(PENDING)
+  startedAt           DateTime?
+  finishedAt          DateTime?
+  resultSummary       String?               @db.VarChar(1000)
+  metadata            Json?
+  checkpoint          Json?
+  createdAt           DateTime              @default(now())
+  updatedAt           DateTime              @updatedAt
+  connectorInstance   ConnectorInstance     @relation(fields: [connectorInstanceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@index([connectorInstanceId, status, createdAt])
+  @@index([jobType, status, createdAt])
+  @@map("connector_sync_jobs")
+}
+
+model ConnectorActionLog {
+  id                  String                  @id @default(uuid()) @db.Uuid
+  organizationId      String?                 @db.Uuid
+  connectorInstanceId String                  @db.Uuid
+  actionType          String                  @db.VarChar(120)
+  targetRef           String?                 @db.VarChar(255)
+  requestPayload      Json?
+  responsePayload     Json?
+  status              ConnectorActionLogStatus @default(PENDING)
+  executedAt          DateTime                @default(now())
+  organization        Organization?           @relation(fields: [organizationId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  connectorInstance   ConnectorInstance       @relation(fields: [connectorInstanceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@index([organizationId, status, executedAt])
+  @@index([connectorInstanceId, actionType, executedAt])
+  @@index([targetRef, executedAt])
+  @@map("connector_action_logs")
+}
+
+model IntegrationShopifyStore {
+  id                String       @id @default(uuid()) @db.Uuid
+  organizationId    String       @db.Uuid
+  shopDomain        String       @db.VarChar(255)
+  accessTokenCipher String       @db.Text
+  scope             String?      @db.Text
+  metadata          Json?
+  installedAt       DateTime     @default(now())
+  uninstalledAt     DateTime?
+  isActive          Boolean      @default(true)
+  createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @updatedAt
+  organization      Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  orders            ShopifyOrder[]
+  products          ShopifyProduct[]
+  customers         ShopifyCustomer[]
+  syncRuns          ShopifySyncRun[]
+  webhookDeliveries ShopifyWebhookDelivery[]
+  syncCursors       ShopifySyncCursor[]
+
+  @@unique([organizationId, shopDomain])
+  @@index([organizationId])
+  @@index([shopDomain])
+  @@map("integration_shopify_stores")
+}
+
+model ShopifyOrder {
+  id                 String                   @id @default(uuid()) @db.Uuid
+  organizationId     String                   @db.Uuid
+  shopifyStoreId     String                   @db.Uuid
+  externalOrderId    String                   @db.VarChar(64)
+  orderName          String?                  @db.VarChar(255)
+  financialStatus    String?                  @db.VarChar(80)
+  fulfillmentStatus  String?                  @db.VarChar(80)
+  currencyCode       String?                  @db.VarChar(10)
+  totalPrice         Decimal?                 @db.Decimal(18, 4)
+  subtotalPrice      Decimal?                 @db.Decimal(18, 4)
+  totalTax           Decimal?                 @db.Decimal(18, 4)
+  customerExternalId String?                  @db.VarChar(64)
+  placedAt           DateTime?
+  rawPayload         Json?
+  createdAt          DateTime                 @default(now())
+  updatedAt          DateTime                 @updatedAt
+  organization       Organization             @relation(fields: [organizationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  shopifyStore       IntegrationShopifyStore  @relation(fields: [shopifyStoreId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@unique([shopifyStoreId, externalOrderId])
+  @@index([organizationId])
+  @@index([shopifyStoreId])
+  @@index([customerExternalId])
+  @@index([placedAt])
+  @@map("shopify_orders")
+}
+
+model ShopifyProduct {
+  id                String                   @id @default(uuid()) @db.Uuid
+  organizationId    String                   @db.Uuid
+  shopifyStoreId    String                   @db.Uuid
+  externalProductId String                   @db.VarChar(64)
+  title             String                   @db.VarChar(255)
+  handle            String?                  @db.VarChar(255)
+  status            String?                  @db.VarChar(80)
+  productType       String?                  @db.VarChar(255)
+  vendor            String?                  @db.VarChar(255)
+  tags              String?                  @db.Text
+  rawPayload        Json?
+  createdAt         DateTime                 @default(now())
+  updatedAt         DateTime                 @updatedAt
+  organization      Organization             @relation(fields: [organizationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  shopifyStore      IntegrationShopifyStore  @relation(fields: [shopifyStoreId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@unique([shopifyStoreId, externalProductId])
+  @@index([organizationId])
+  @@index([shopifyStoreId])
+  @@index([handle])
+  @@map("shopify_products")
+}
+
+model ShopifyCustomer {
+  id                 String                   @id @default(uuid()) @db.Uuid
+  organizationId     String                   @db.Uuid
+  shopifyStoreId     String                   @db.Uuid
+  externalCustomerId String                   @db.VarChar(64)
+  email              String?                  @db.VarChar(320)
+  firstName          String?                  @db.VarChar(120)
+  lastName           String?                  @db.VarChar(120)
+  phone              String?                  @db.VarChar(60)
+  ordersCount        Int?
+  totalSpent         Decimal?                 @db.Decimal(18, 4)
+  state              String?                  @db.VarChar(80)
+  tags               String?                  @db.Text
+  rawPayload         Json?
+  createdAt          DateTime                 @default(now())
+  updatedAt          DateTime                 @updatedAt
+  organization       Organization             @relation(fields: [organizationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  shopifyStore       IntegrationShopifyStore  @relation(fields: [shopifyStoreId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@unique([shopifyStoreId, externalCustomerId])
+  @@index([organizationId])
+  @@index([shopifyStoreId])
+  @@index([email])
+  @@map("shopify_customers")
+}
+
+model ShopifySyncRun {
+  id               String                   @id @default(uuid()) @db.Uuid
+  organizationId   String                   @db.Uuid
+  shopifyStoreId   String                   @db.Uuid
+  syncType         String                   @db.VarChar(80)
+  status           String                   @db.VarChar(40)
+  startedAt        DateTime                 @default(now())
+  completedAt      DateTime?
+  recordsProcessed Int                      @default(0)
+  errorMessage     String?                  @db.VarChar(1000)
+  metadata         Json?
+  createdAt        DateTime                 @default(now())
+  updatedAt        DateTime                 @updatedAt
+  organization     Organization             @relation(fields: [organizationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  shopifyStore     IntegrationShopifyStore  @relation(fields: [shopifyStoreId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@index([organizationId])
+  @@index([shopifyStoreId])
+  @@index([syncType])
+  @@index([status])
+  @@map("shopify_sync_runs")
+}
+
+model ShopifyWebhookDelivery {
+  id             String                   @id @default(uuid()) @db.Uuid
+  organizationId String?                  @db.Uuid
+  shopifyStoreId String?                  @db.Uuid
+  topic          String                   @db.VarChar(120)
+  shopDomain     String                   @db.VarChar(255)
+  webhookId      String?                  @db.VarChar(120)
+  eventId        String?                  @db.VarChar(120)
+  payloadHash    String?                  @db.VarChar(128)
+  status         String                   @db.VarChar(40)
+  receivedAt     DateTime                 @default(now())
+  processedAt    DateTime?
+  errorMessage   String?                  @db.VarChar(1000)
+  rawPayload     Json?
+  createdAt      DateTime                 @default(now())
+  updatedAt      DateTime                 @updatedAt
+  organization   Organization?            @relation(fields: [organizationId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  shopifyStore   IntegrationShopifyStore? @relation(fields: [shopifyStoreId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+
+  @@index([organizationId])
+  @@index([shopifyStoreId])
+  @@index([shopDomain])
+  @@index([topic])
+  @@index([status])
+  @@index([receivedAt])
+  @@index([webhookId])
+  @@index([eventId])
+  @@map("shopify_webhook_deliveries")
+}
+
+model ShopifySyncCursor {
+  id           String                  @id @default(uuid()) @db.Uuid
+  organizationId String                @db.Uuid
+  shopifyStoreId String                @db.Uuid
+  cursorType   String                  @db.VarChar(80)
+  lastSyncedAt DateTime?
+  cursorValue  String?                 @db.Text
+  metadata     Json?
+  createdAt    DateTime                @default(now())
+  updatedAt    DateTime                @updatedAt
+  organization Organization            @relation(fields: [organizationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  shopifyStore IntegrationShopifyStore @relation(fields: [shopifyStoreId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@unique([shopifyStoreId, cursorType])
+  @@index([organizationId])
+  @@index([shopifyStoreId])
+  @@index([cursorType])
+  @@map("shopify_sync_cursors")
+}
+
+model IntegrationStripeAccount {
+  id                 String       @id @default(uuid()) @db.Uuid
+  organizationId     String       @db.Uuid
+  stripeAccountId    String       @db.VarChar(120)
+  accountEmail       String?      @db.VarChar(255)
+  accessTokenCipher  String       @db.Text
+  refreshTokenCipher String?      @db.Text
+  scope              String?      @db.VarChar(255)
+  isActive           Boolean      @default(true)
+  metadata           Json?
+  connectedAt        DateTime     @default(now())
+  disconnectedAt     DateTime?
+  createdAt          DateTime     @default(now())
+  updatedAt          DateTime     @updatedAt
+  organization       Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  charges            StripeCharge[]
+  paymentEvents      StripePaymentEvent[]
+  syncRuns           StripeSyncRun[]
+
+  @@unique([organizationId, stripeAccountId])
+  @@index([organizationId])
+  @@index([stripeAccountId])
+  @@map("integration_stripe_accounts")
+}
+
+model StripeCharge {
+  id                 String                   @id @default(uuid()) @db.Uuid
+  organizationId     String                   @db.Uuid
+  stripeAccountRefId String                   @db.Uuid
+  externalChargeId   String                   @db.VarChar(120)
+  paymentIntentId    String?                  @db.VarChar(120)
+  customerId         String?                  @db.VarChar(120)
+  amount             Decimal?                 @db.Decimal(18, 4)
+  currency           String?                  @db.VarChar(12)
+  status             String?                  @db.VarChar(60)
+  paid               Boolean?
+  refunded           Boolean?
+  disputed           Boolean?
+  createdAtRemote    DateTime?
+  rawPayload         Json?
+  createdAt          DateTime                 @default(now())
+  updatedAt          DateTime                 @updatedAt
+  organization       Organization             @relation(fields: [organizationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  stripeAccount      IntegrationStripeAccount @relation(fields: [stripeAccountRefId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@unique([stripeAccountRefId, externalChargeId])
+  @@index([organizationId])
+  @@index([status])
+  @@index([createdAtRemote])
+  @@map("stripe_charges")
+}
+
+model StripePaymentEvent {
+  id                 String                   @id @default(uuid()) @db.Uuid
+  organizationId     String                   @db.Uuid
+  stripeAccountRefId String                   @db.Uuid
+  externalEventId    String                   @db.VarChar(120)
+  type               String                   @db.VarChar(120)
+  createdAtRemote    DateTime?
+  rawPayload         Json?
+  createdAt          DateTime                 @default(now())
+  updatedAt          DateTime                 @updatedAt
+  organization       Organization             @relation(fields: [organizationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  stripeAccount      IntegrationStripeAccount @relation(fields: [stripeAccountRefId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@unique([stripeAccountRefId, externalEventId])
+  @@index([organizationId])
+  @@index([type])
+  @@index([createdAtRemote])
+  @@map("stripe_payment_events")
+}
+
+model StripeSyncRun {
+  id                 String                   @id @default(uuid()) @db.Uuid
+  organizationId     String                   @db.Uuid
+  stripeAccountRefId String                   @db.Uuid
+  syncType           String                   @db.VarChar(80)
+  status             String                   @db.VarChar(40)
+  startedAt          DateTime                 @default(now())
+  completedAt        DateTime?
+  recordsProcessed   Int                      @default(0)
+  errorMessage       String?                  @db.VarChar(1000)
+  metadata           Json?
+  createdAt          DateTime                 @default(now())
+  updatedAt          DateTime                 @updatedAt
+  organization       Organization             @relation(fields: [organizationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  stripeAccount      IntegrationStripeAccount @relation(fields: [stripeAccountRefId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@index([organizationId])
+  @@index([status])
+  @@index([syncType])
+  @@map("stripe_sync_runs")
+}
+
+model CrmCustomerProfile {
+  id                 String       @id @default(uuid()) @db.Uuid
+  organizationId     String       @map("organization_id") @db.Uuid
+  externalCustomerId String       @map("external_customer_id") @db.VarChar(64)
+  source             String       @db.VarChar(40)
+  email              String?      @db.VarChar(320)
+  firstName          String?      @map("first_name") @db.VarChar(120)
+  lastName           String?      @map("last_name") @db.VarChar(120)
+  phone              String?      @db.VarChar(60)
+  totalOrders        Int          @map("total_orders") @default(0)
+  totalRevenue       Decimal?     @map("total_revenue") @db.Decimal(18, 4)
+  averageOrderValue  Decimal?     @map("average_order_value") @db.Decimal(18, 4)
+  firstOrderAt       DateTime?    @map("first_order_at")
+  lastOrderAt        DateTime?    @map("last_order_at")
+  isHighValue        Boolean      @map("is_high_value") @default(false)
+  isAtRisk           Boolean      @map("is_at_risk") @default(false)
+  lifecycleStage     String?      @map("lifecycle_stage") @db.VarChar(40)
+  tags               String?      @db.Text
+  metadata           Json?
+  createdAt          DateTime     @map("created_at") @default(now())
+  updatedAt          DateTime     @map("updated_at") @updatedAt
+  organization       Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@unique([organizationId, source, externalCustomerId])
+  @@index([organizationId])
+  @@index([email])
+  @@index([isHighValue])
+  @@index([isAtRisk])
+  @@map("crm_customer_profiles")
+}
+
+model CrmCustomerSegmentSnapshot {
+  id            String       @id @default(uuid()) @db.Uuid
+  organizationId String      @map("organization_id") @db.Uuid
+  date          DateTime
+  segmentType   String       @map("segment_type") @db.VarChar(80)
+  customerCount Int          @map("customer_count")
+  metadata      Json?
+  createdAt     DateTime     @map("created_at") @default(now())
+  organization  Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@index([organizationId])
+  @@index([date])
+  @@index([segmentType])
+  @@map("crm_customer_segment_snapshots")
+}
+
+model AiSignal {
+  id             String       @id @default(uuid()) @db.Uuid
+  organizationId String       @db.Uuid
+  type           String       @db.VarChar(80)
+  severity       String       @db.VarChar(20)
+  title          String       @db.VarChar(255)
+  description    String       @db.VarChar(1000)
+  metadata       Json?
+  detectedAt     DateTime     @default(now())
+  isActive       Boolean      @default(true)
+  createdAt      DateTime     @default(now())
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@index([organizationId])
+  @@index([type])
+  @@index([severity])
+  @@index([isActive])
+  @@index([detectedAt])
+  @@map("ai_signals")
+}
+
+model AiInsight {
+  id             String       @id @default(uuid()) @db.Uuid
+  organizationId String       @db.Uuid
+  category       String       @db.VarChar(80)
+  summary        String       @db.VarChar(500)
+  explanation    String       @db.VarChar(2000)
+  metadata       Json?
+  createdAt      DateTime     @default(now())
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@index([organizationId])
+  @@index([category])
+  @@index([createdAt])
+  @@map("ai_insights")
+}
+
+model AiDailySummary {
+  id             String       @id @default(uuid()) @db.Uuid
+  organizationId String       @db.Uuid
+  date           DateTime
+  summary        String       @db.VarChar(1000)
+  metrics        Json
+  createdAt      DateTime     @default(now())
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@unique([organizationId, date])
+  @@index([organizationId])
+  @@index([date])
+  @@map("ai_daily_summaries")
+}
+
+model AiRecommendation {
+  id                String       @id @default(uuid()) @db.Uuid
+  organizationId    String       @db.Uuid
+  category          String       @db.VarChar(80)
+  priority          String       @db.VarChar(20)
+  title             String       @db.VarChar(255)
+  description       String       @db.VarChar(1000)
+  rationale         String       @db.VarChar(2000)
+  relatedSignalType String?      @db.VarChar(80)
+  metadata          Json?
+  isActive          Boolean      @default(true)
+  createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @updatedAt
+  organization      Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@index([organizationId])
+  @@index([priority])
+  @@index([isActive])
+  @@index([relatedSignalType])
+  @@map("ai_recommendations")
+}
+
+model ActionProposal {
+  id                 String       @id @default(uuid()) @db.Uuid
+  organizationId     String       @db.Uuid
+  proposalType       String       @db.VarChar(80)
+  title              String       @db.VarChar(255)
+  description        String       @db.VarChar(1000)
+  status             String       @default("PENDING") @db.VarChar(40)
+  source             String       @db.VarChar(80)
+  priority           String       @db.VarChar(20)
+  reviewedAt         DateTime?    @map("reviewed_at")
+  reviewedByUserId   String?      @map("reviewed_by_user_id") @db.Uuid
+  latestDecisionNote String?      @map("latest_decision_note") @db.VarChar(2000)
+  metadata           Json?
+  createdAt          DateTime     @default(now())
+  updatedAt          DateTime              @updatedAt
+  organization       Organization          @relation(fields: [organizationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  reviews            ActionProposalReview[]
+  executions         ActionExecution[]
+  decisionLogs       DecisionLog[]
+
+  @@index([organizationId])
+
+  @@index([status])
+  @@index([priority])
+  @@map("action_proposals")
+}
+
+model ActionProposalReview {
+  id               String         @id @default(uuid()) @db.Uuid
+  organizationId   String         @map("organization_id") @db.Uuid
+  actionProposalId String         @map("action_proposal_id") @db.Uuid
+  reviewerUserId   String         @map("reviewer_user_id") @db.Uuid
+  decision         String         @db.VarChar(40)
+  note             String?        @db.VarChar(2000)
+  createdAt        DateTime       @map("created_at") @default(now())
+  organization     Organization   @relation(fields: [organizationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  actionProposal   ActionProposal @relation(fields: [actionProposalId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@index([organizationId])
+  @@index([actionProposalId])
+  @@index([reviewerUserId])
+  @@map("action_proposal_reviews")
+}
+
+model AiExecutiveSummary {
+  id              String       @id @default(uuid()) @db.Uuid
+  organizationId  String       @db.Uuid
+  date            DateTime
+  summary         String       @db.VarChar(2000)
+  highlights      Json?
+  risks           Json?
+  recommendations Json?
+  sourceType      String       @db.VarChar(40)
+  modelName       String?      @db.VarChar(120)
+  status          String       @default("SUCCEEDED") @db.VarChar(40)
+  metadata        Json?
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@unique([organizationId, date])
+  @@index([organizationId])
+  @@index([date])
+  @@index([status])
+  @@map("ai_executive_summaries")
+}
+
+model AiWeeklyDigest {
+  id              String       @id @default(uuid()) @db.Uuid
+  organizationId  String       @db.Uuid
+  weekStartDate   DateTime
+  weekEndDate     DateTime
+  summary         String       @db.VarChar(3000)
+  highlights      Json?
+  risks           Json?
+  recommendations Json?
+  metrics         Json
+  sourceType      String       @db.VarChar(40)
+  modelName       String?      @db.VarChar(120)
+  status          String       @default("SUCCEEDED") @db.VarChar(40)
+  metadata        Json?
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@unique([organizationId, weekStartDate, weekEndDate])
+  @@index([organizationId])
+  @@index([weekStartDate])
+  @@index([status])
+  @@map("ai_weekly_digests")
+}
+
+model AiNotification {
+  id                String       @id @default(uuid()) @db.Uuid
+  organizationId    String       @db.Uuid
+  type              String       @db.VarChar(80)
+  severity          String       @db.VarChar(20)
+  title             String       @db.VarChar(255)
+  message           String       @db.VarChar(1000)
+  relatedEntityId   String?      @db.VarChar(100)
+  relatedEntityType String?      @db.VarChar(80)
+  isRead            Boolean      @default(false)
+  isArchived        Boolean      @default(false)
+  metadata          Json?
+  createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @updatedAt
+  organization      Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@index([organizationId])
+  @@index([isRead])
+  @@index([severity])
+  @@index([createdAt])
+  @@map("ai_notifications")
+}
+
+model AgentActionProposal {
+  id               String                    @id @default(uuid()) @db.Uuid
+  agentRunId       String                    @db.Uuid
+  actionType       String                    @db.VarChar(120)
+  targetEntityType String?                   @db.VarChar(80)
+  targetEntityId   String?                   @db.VarChar(100)
+  status           AgentActionProposalStatus @default(PROPOSED)
+  summary          String                    @db.VarChar(1000)
+  payload          Json?
+  riskLevel        AgentRiskLevel
+  requiresApproval Boolean                   @default(false)
+  createdAt        DateTime                  @default(now())
+  updatedAt        DateTime                  @updatedAt
+  agentRun         AgentRun                  @relation(fields: [agentRunId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  verificationResults AgentVerificationResult[]
+
+  @@index([agentRunId, status, createdAt])
+  @@index([actionType, riskLevel])
+  @@index([targetEntityType, targetEntityId])
+  @@map("agent_action_proposals")
+}
+
+model AgentVerificationResult {
+  id                String                  @id @default(uuid()) @db.Uuid
+  organizationId    String?                 @db.Uuid
+  agentRunId        String                  @db.Uuid
+  actionProposalId  String?                 @db.Uuid
+  verificationType  AgentVerificationType
+  expectedState     Json?
+  observedState     Json?
+  verificationStatus AgentVerificationStatus @default(PENDING)
+  summary           String                  @db.VarChar(500)
+  details           Json?
+  createdAt         DateTime                @default(now())
+  agentRun          AgentRun                @relation(fields: [agentRunId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  actionProposal    AgentActionProposal?    @relation(fields: [actionProposalId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+
+  @@index([organizationId, createdAt])
+  @@index([agentRunId, createdAt])
+  @@index([actionProposalId, createdAt])
+  @@index([verificationType, verificationStatus, createdAt])
+  @@map("agent_verification_results")
+}
+
+model AgentFeedback {
+  id              String                  @id @default(uuid()) @db.Uuid
+  organizationId  String?                 @db.Uuid
+  agentRunId      String                  @db.Uuid
+  sourceType      AgentFeedbackSourceType
+  feedbackType    AgentFeedbackType
+  score           Int?
+  comment         String?                 @db.VarChar(1000)
+  createdByUserId String?                 @db.Uuid
+  createdAt       DateTime                @default(now())
+  agentRun        AgentRun                @relation(fields: [agentRunId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@index([organizationId, createdAt])
+  @@index([agentRunId, createdAt])
+  @@index([sourceType, feedbackType, createdAt])
+  @@map("agent_feedback")
+}
+
+model AgentEvaluationResult {
+  id                    String    @id @default(uuid()) @db.Uuid
+  organizationId        String?   @db.Uuid
+  agentRunId            String    @db.Uuid
+  metricName            String    @db.VarChar(120)
+  metricValue           Float
+  baselineValue         Float?
+  deltaValue            Float?
+  evaluationWindowStart DateTime
+  evaluationWindowEnd   DateTime
+  summary               String    @db.VarChar(500)
+  createdAt             DateTime  @default(now())
+  agentRun              AgentRun  @relation(fields: [agentRunId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@index([organizationId, createdAt])
+  @@index([agentRunId, createdAt])
+  @@index([metricName, createdAt])
+  @@map("agent_evaluation_results")
+}
+
+model AgentPolicyRule {
+  id                String           @id @default(uuid()) @db.Uuid
+  agentDefinitionId String?          @db.Uuid
+  actionType        String           @db.VarChar(120)
+  riskLevel         AgentRiskLevel
+  requiresApproval  Boolean          @default(false)
+  isEnabled         Boolean          @default(true)
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+  agentDefinition   AgentDefinition? @relation(fields: [agentDefinitionId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  policyViolations  AgentPolicyViolation[]
+
+  @@index([agentDefinitionId, actionType, isEnabled])
+  @@index([actionType, isEnabled])
+  @@map("agent_policy_rules")
+}
+
+model AgentExecutionMetric {
+  id             String       @id @default(uuid()) @db.Uuid
+  organizationId String?      @db.Uuid
+  agentRunId     String       @db.Uuid
+  metricType     String       @db.VarChar(120)
+  metricValue    Float
+  metricUnit     String?      @db.VarChar(40)
+  metadata       Json?
+  measuredAt     DateTime     @default(now())
+  organization   Organization? @relation(fields: [organizationId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  agentRun       AgentRun     @relation(fields: [agentRunId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@index([organizationId, measuredAt])
+  @@index([agentRunId, measuredAt])
+  @@index([metricType, measuredAt])
+  @@map("agent_execution_metrics")
+}
+
+model AgentPolicyViolation {
+  id             String           @id @default(uuid()) @db.Uuid
+  organizationId String?          @db.Uuid
+  agentRunId     String           @db.Uuid
+  policyRuleId   String?          @db.Uuid
+  violationType  String           @db.VarChar(120)
+  severity       AgentRiskLevel
+  description    String           @db.VarChar(1000)
+  metadata       Json?
+  detectedAt     DateTime         @default(now())
+  organization   Organization?    @relation(fields: [organizationId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  agentRun       AgentRun         @relation(fields: [agentRunId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  policyRule     AgentPolicyRule? @relation(fields: [policyRuleId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+
+  @@index([organizationId, detectedAt])
+  @@index([agentRunId, detectedAt])
+  @@index([violationType, detectedAt])
+  @@index([severity, detectedAt])
+  @@map("agent_policy_violations")
+}
+
+model AgentOperationalImpact {
+  id                    String        @id @default(uuid()) @db.Uuid
+  organizationId        String?       @db.Uuid
+  agentRunId            String        @db.Uuid
+  impactType            String        @db.VarChar(120)
+  baselineValue         Float?
+  observedValue         Float?
+  delta                 Float?
+  evaluationWindowStart DateTime
+  evaluationWindowEnd   DateTime
+  summary               String        @db.VarChar(500)
+  metadata              Json?
+  createdAt             DateTime      @default(now())
+  organization          Organization? @relation(fields: [organizationId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  agentRun              AgentRun      @relation(fields: [agentRunId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@index([organizationId, createdAt])
+  @@index([agentRunId, createdAt])
+  @@index([impactType, createdAt])
+  @@map("agent_operational_impacts")
+}
+
+model WorkforceMember {
+  id                  String                      @id @default(uuid()) @db.Uuid
+  organizationId      String                      @db.Uuid
+  employeeId          String?                     @unique @db.Uuid
+  userId              String?                     @unique @db.Uuid
+  workerCode          String                      @db.VarChar(40)
+  workerType          WorkforceMemberType
+  employmentModel     WorkforceEmploymentModel?
+  firstName           String                      @db.VarChar(100)
+  lastName            String                      @db.VarChar(100)
+  displayName         String?                     @db.VarChar(200)
+  workEmail           String?                     @db.VarChar(255)
+  phoneNumber         String?                     @db.VarChar(30)
+  operationalStatus   WorkforceOperationalStatus  @default(ACTIVE)
+  complianceStatus    WorkforceComplianceStatus   @default(PENDING)
+  availabilityStatus  WorkforceAvailabilityStatus @default(AVAILABLE)
+  primaryDepartmentId String?                     @db.Uuid
+  primaryPositionId   String?                     @db.Uuid
+  homeZoneId          String?                     @db.Uuid
+  skills              Json?
+  metadata            Json?
+  createdAt           DateTime                    @default(now())
+  updatedAt           DateTime                    @updatedAt
+  deletedAt           DateTime?
+  organization        Organization                @relation(fields: [organizationId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  employee            Employee?                   @relation(fields: [employeeId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  user                User?                       @relation("WorkforceMemberUser", fields: [userId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  primaryDepartment   Department?                 @relation(fields: [primaryDepartmentId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  primaryPosition     Position?                   @relation(fields: [primaryPositionId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  homeZone            OperationalZone?            @relation("WorkforceMemberHomeZone", fields: [homeZoneId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  profileExtension    WorkforceProfileExtension?
+  authorizations      WorkforceAuthorization[]
+  credentialDocuments CredentialDocument[]
+  statusHistory       WorkforceStatusHistory[]
+  assignments         ResourceAssignment[]
+  maintenanceRecords  AssetMaintenanceRecord[]
+  incidents           OperationalIncident[]
+
+  @@unique([organizationId, workerCode])
+  @@index([organizationId, workerType, operationalStatus])
+  @@index([organizationId, availabilityStatus, complianceStatus])
+  @@index([primaryDepartmentId])
+  @@index([primaryPositionId])
+  @@index([homeZoneId])
+  @@index([deletedAt])
+  @@map("workforce_members")
+}
+
+model CredentialDocument {
+  id                 String                       @id @default(uuid()) @db.Uuid
+  organizationId     String                       @db.Uuid
+  workforceMemberId  String                       @db.Uuid
+  documentType       CredentialDocumentType
+  title              String                       @db.VarChar(160)
+  documentNumber     String?                      @db.VarChar(120)
+  issuingAuthority   String?                      @db.VarChar(160)
+  issuedAt           DateTime?
+  expiresAt          DateTime?
+  verificationStatus CredentialVerificationStatus @default(PENDING)
+  verifiedByUserId   String?                      @db.Uuid
+  verifiedAt         DateTime?
+  storageUrl         String?                      @db.VarChar(500)
+  metadata           Json?
+  createdAt          DateTime                     @default(now())
+  updatedAt          DateTime                     @updatedAt
+  organization       Organization                 @relation(fields: [organizationId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  workforceMember    WorkforceMember              @relation(fields: [workforceMemberId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  verifiedByUser     User?                        @relation("CredentialDocumentVerifiedByUser", fields: [verifiedByUserId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  supportedAuthorizations WorkforceAuthorization[] @relation("WorkforceAuthorizationEvidenceDocument")
+
+  @@index([organizationId, documentType, verificationStatus])
+  @@index([workforceMemberId, verificationStatus, expiresAt])
+  @@index([verifiedByUserId])
+  @@index([expiresAt])
+  @@map("credential_documents")
+}
+
+model WorkforceProfileExtension {
+  id                 String           @id @default(uuid()) @db.Uuid
+  organizationId     String           @db.Uuid
+  workforceMemberId  String           @unique @db.Uuid
+  engagementStartDate DateTime?       @db.Date
+  metadata           Json?
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
+  organization       Organization     @relation(fields: [organizationId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  workforceMember    WorkforceMember  @relation(fields: [workforceMemberId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@index([organizationId, engagementStartDate])
+  @@map("workforce_profile_extensions")
+}
+
+model WorkforceAuthorization {
+  id                 String                        @id @default(uuid()) @db.Uuid
+  organizationId     String                        @db.Uuid
+  workforceMemberId  String                        @db.Uuid
+  evidenceDocumentId String?                       @db.Uuid
+  authorizationType  WorkforceAuthorizationType
+  authorityScope     String?                       @db.VarChar(120)
+  identifierValue    String?                       @db.VarChar(160)
+  issuingAuthority   String?                       @db.VarChar(160)
+  issuedAt           DateTime?                     @db.Date
+  expiresAt          DateTime?                     @db.Date
+  status             WorkforceAuthorizationStatus  @default(PENDING)
+  metadata           Json?
+  createdAt          DateTime                      @default(now())
+  updatedAt          DateTime                      @updatedAt
+  organization       Organization                  @relation(fields: [organizationId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  workforceMember    WorkforceMember               @relation(fields: [workforceMemberId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  evidenceDocument   CredentialDocument?           @relation("WorkforceAuthorizationEvidenceDocument", fields: [evidenceDocumentId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+
+  @@index([organizationId, authorizationType, status])
+  @@index([workforceMemberId, status, expiresAt])
+  @@index([evidenceDocumentId])
+  @@map("workforce_authorizations")
+}
+
+model WorkforceStatusHistory {
+  id                String                  @id @default(uuid()) @db.Uuid
+  organizationId    String                  @db.Uuid
+  workforceMemberId String                  @db.Uuid
+  category          WorkforceStatusCategory
+  previousValue     String?                 @db.VarChar(80)
+  nextValue         String                  @db.VarChar(80)
+  reason            String?                 @db.VarChar(500)
+  changedByUserId   String?                 @db.Uuid
+  effectiveAt       DateTime                @default(now())
+  metadata          Json?
+  createdAt         DateTime                @default(now())
+  updatedAt         DateTime                @updatedAt
+  organization      Organization            @relation(fields: [organizationId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  workforceMember   WorkforceMember         @relation(fields: [workforceMemberId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  changedByUser     User?                   @relation("WorkforceStatusChangedByUser", fields: [changedByUserId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+
+  @@index([organizationId, category, effectiveAt])
+  @@index([workforceMemberId, effectiveAt])
+  @@index([changedByUserId, effectiveAt])
+  @@map("workforce_status_history")
+}
+
+model Asset {
+  id                  String                  @id @default(uuid()) @db.Uuid
+  organizationId      String                  @db.Uuid
+  assetCode           String                  @db.VarChar(40)
+  assetType           AssetType
+  assetClass          String?                 @db.VarChar(80)
+  name                String                  @db.VarChar(160)
+  serialNumber        String?                 @db.VarChar(120)
+  registrationNumber  String?                 @db.VarChar(120)
+  operationalStatus   AssetOperationalStatus  @default(ACTIVE)
+  complianceStatus    AssetComplianceStatus   @default(PENDING)
+  availabilityStatus  AssetAvailabilityStatus @default(AVAILABLE)
+  zoneId              String?                 @db.Uuid
+  ownerOrganizationId String?                 @db.Uuid
+  specifications      Json?
+  metadata            Json?
+  createdAt           DateTime                @default(now())
+  updatedAt           DateTime                @updatedAt
+  deletedAt           DateTime?
+  organization        Organization            @relation("AssetOrganization", fields: [organizationId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  zone                OperationalZone?        @relation("AssetZone", fields: [zoneId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  ownerOrganization   Organization?           @relation("AssetOwnerOrganization", fields: [ownerOrganizationId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  maintenanceRecords  AssetMaintenanceRecord[]
+  statusHistory       AssetStatusHistory[]
+  assignments         ResourceAssignment[]
+  incidents           OperationalIncident[]
+
+  @@unique([organizationId, assetCode])
+  @@index([organizationId, assetType, operationalStatus])
+  @@index([organizationId, availabilityStatus, complianceStatus])
+  @@index([zoneId])
+  @@index([ownerOrganizationId])
+  @@index([deletedAt])
+  @@map("assets")
+}
+
+model AssetMaintenanceRecord {
+  id                           String                 @id @default(uuid()) @db.Uuid
+  organizationId               String                 @db.Uuid
+  assetId                      String                 @db.Uuid
+  maintenanceType              AssetMaintenanceType
+  title                        String                 @db.VarChar(160)
+  description                  String?                @db.VarChar(1000)
+  status                       AssetMaintenanceStatus @default(SCHEDULED)
+  priority                     WorkOrderPriority      @default(MEDIUM)
+  scheduledAt                  DateTime?
+  startedAt                    DateTime?
+  completedAt                  DateTime?
+  performedByWorkforceMemberId String?                @db.Uuid
+  vendorName                   String?                @db.VarChar(160)
+  costAmount                   Decimal?               @db.Decimal(12, 2)
+  currencyCode                 String?                @db.VarChar(3)
+  metadata                     Json?
+  createdAt                    DateTime               @default(now())
+  updatedAt                    DateTime               @updatedAt
+  organization                 Organization           @relation(fields: [organizationId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  asset                        Asset                  @relation(fields: [assetId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  performedByWorkforceMember   WorkforceMember?       @relation(fields: [performedByWorkforceMemberId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+
+  @@index([organizationId, status, scheduledAt])
+  @@index([assetId, status, scheduledAt])
+  @@index([performedByWorkforceMemberId])
+  @@map("asset_maintenance_records")
+}
+
+model AssetStatusHistory {
+  id              String              @id @default(uuid()) @db.Uuid
+  organizationId  String              @db.Uuid
+  assetId         String              @db.Uuid
+  category        AssetStatusCategory
+  previousValue   String?             @db.VarChar(80)
+  nextValue       String              @db.VarChar(80)
+  reason          String?             @db.VarChar(500)
+  changedByUserId String?             @db.Uuid
+  effectiveAt     DateTime            @default(now())
+  metadata        Json?
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+  organization    Organization        @relation(fields: [organizationId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  asset           Asset               @relation(fields: [assetId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  changedByUser   User?               @relation("AssetStatusChangedByUser", fields: [changedByUserId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+
+  @@index([organizationId, category, effectiveAt])
+  @@index([assetId, effectiveAt])
+  @@index([changedByUserId, effectiveAt])
+  @@map("asset_status_history")
+}
+
+model OperationalZone {
+  id                 String              @id @default(uuid()) @db.Uuid
+  organizationId     String              @db.Uuid
+  zoneCode           String              @db.VarChar(40)
+  name               String              @db.VarChar(160)
+  zoneType           OperationalZoneType
+  description        String?             @db.VarChar(500)
+  parentZoneId       String?             @db.Uuid
+  coverageDefinition Json?
+  isActive           Boolean             @default(true)
+  metadata           Json?
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+  organization       Organization        @relation(fields: [organizationId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  parentZone         OperationalZone?    @relation("OperationalZoneHierarchy", fields: [parentZoneId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  childZones         OperationalZone[]   @relation("OperationalZoneHierarchy")
+  workforceMembers   WorkforceMember[]   @relation("WorkforceMemberHomeZone")
+  assets             Asset[]             @relation("AssetZone")
+  workOrders         WorkOrder[]
+  scheduleShifts     ScheduleShift[]
+  incidents          OperationalIncident[]
+  assignments        ResourceAssignment[]
+
+  @@unique([organizationId, zoneCode])
+  @@index([organizationId, zoneType, isActive])
+  @@index([parentZoneId])
+  @@map("operational_zones")
+}
+
+model WorkOrder {
+  id              String            @id @default(uuid()) @db.Uuid
+  organizationId  String            @db.Uuid
+  workOrderCode   String            @db.VarChar(40)
+  title           String            @db.VarChar(160)
+  description     String?           @db.VarChar(1000)
+  workType        String            @db.VarChar(80)
+  status          WorkOrderStatus   @default(DRAFT)
+  priority        WorkOrderPriority @default(MEDIUM)
+  zoneId          String?           @db.Uuid
+  createdByUserId String?           @db.Uuid
+  requestedAt     DateTime          @default(now())
+  scheduledStartAt DateTime?
+  scheduledEndAt  DateTime?
+  actualStartAt   DateTime?
+  actualEndAt     DateTime?
+  sourceType      String?           @db.VarChar(80)
+  sourceId        String?           @db.VarChar(100)
+  metadata        Json?
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  organization    Organization      @relation(fields: [organizationId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  zone            OperationalZone?  @relation(fields: [zoneId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  createdByUser   User?             @relation("WorkOrderCreatedByUser", fields: [createdByUserId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  assignments     ResourceAssignment[]
+  incidents       OperationalIncident[]
+
+  @@unique([organizationId, workOrderCode])
+  @@index([organizationId, status, priority])
+  @@index([organizationId, zoneId, status])
+  @@index([scheduledStartAt, scheduledEndAt])
+  @@index([sourceType, sourceId])
+  @@index([createdByUserId])
+  @@map("work_orders")
+}
+
+model SchedulePlan {
+  id                  String             @id @default(uuid()) @db.Uuid
+  organizationId      String             @db.Uuid
+  name                String             @db.VarChar(160)
+  planType            SchedulePlanType
+  status              SchedulePlanStatus @default(DRAFT)
+  planningWindowStart DateTime
+  planningWindowEnd   DateTime
+  ownerUserId         String?            @db.Uuid
+  metadata            Json?
+  createdAt           DateTime           @default(now())
+  updatedAt           DateTime           @updatedAt
+  organization        Organization       @relation(fields: [organizationId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  ownerUser           User?              @relation("SchedulePlanOwnerUser", fields: [ownerUserId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  shifts              ScheduleShift[]
+
+  @@index([organizationId, status, planningWindowStart])
+  @@index([ownerUserId])
+  @@map("schedule_plans")
+}
+
+model ScheduleShift {
+  id                String              @id @default(uuid()) @db.Uuid
+  organizationId    String              @db.Uuid
+  schedulePlanId    String?             @db.Uuid
+  shiftCode         String              @db.VarChar(40)
+  shiftType         ShiftType
+  title             String              @db.VarChar(160)
+  status            ScheduleShiftStatus @default(SCHEDULED)
+  zoneId            String?             @db.Uuid
+  ownerUserId       String?             @db.Uuid
+  startsAt          DateTime
+  endsAt            DateTime
+  capacityRequired  Int?
+  capacityAllocated Int?
+  metadata          Json?
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+  organization      Organization        @relation(fields: [organizationId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  schedulePlan      SchedulePlan?       @relation(fields: [schedulePlanId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  zone              OperationalZone?    @relation(fields: [zoneId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  ownerUser         User?               @relation("ScheduleShiftOwnerUser", fields: [ownerUserId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  assignments       ResourceAssignment[]
+
+  @@unique([organizationId, shiftCode])
+  @@index([organizationId, status, startsAt])
+  @@index([organizationId, zoneId, startsAt])
+  @@index([schedulePlanId])
+  @@index([ownerUserId])
+  @@map("schedule_shifts")
+}
+
+model OperationalIncident {
+  id                String                    @id @default(uuid()) @db.Uuid
+  organizationId    String                    @db.Uuid
+  incidentCode      String                    @db.VarChar(40)
+  incidentType      String                    @db.VarChar(80)
+  title             String                    @db.VarChar(160)
+  description       String?                   @db.VarChar(1000)
+  severity          IncidentSeverity
+  status            OperationalIncidentStatus @default(OPEN)
+  zoneId            String?                   @db.Uuid
+  workOrderId       String?                   @db.Uuid
+  workforceMemberId String?                   @db.Uuid
+  assetId           String?                   @db.Uuid
+  relatedEntityType String?                   @db.VarChar(80)
+  relatedEntityId   String?                   @db.VarChar(100)
+  reportedByUserId  String?                   @db.Uuid
+  assignedToUserId  String?                   @db.Uuid
+  reportedAt        DateTime                  @default(now())
+  resolvedAt        DateTime?
+  metadata          Json?
+  createdAt         DateTime                  @default(now())
+  updatedAt         DateTime                  @updatedAt
+  organization      Organization              @relation(fields: [organizationId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  zone              OperationalZone?          @relation(fields: [zoneId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  workOrder         WorkOrder?                @relation(fields: [workOrderId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  workforceMember   WorkforceMember?          @relation(fields: [workforceMemberId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  asset             Asset?                    @relation(fields: [assetId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  reportedByUser    User?                     @relation("OperationalIncidentReportedByUser", fields: [reportedByUserId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  assignedToUser    User?                     @relation("OperationalIncidentAssignedToUser", fields: [assignedToUserId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  actions           IncidentAction[]
+
+  @@unique([organizationId, incidentCode])
+  @@index([organizationId, status, severity, reportedAt])
+  @@index([zoneId, status, reportedAt])
+  @@index([workOrderId])
+  @@index([workforceMemberId])
+  @@index([assetId])
+  @@index([relatedEntityType, relatedEntityId])
+  @@index([assignedToUserId, status])
+  @@map("operational_incidents")
+}
+
+model IncidentAction {
+  id                String              @id @default(uuid()) @db.Uuid
+  organizationId    String              @db.Uuid
+  incidentId        String              @db.Uuid
+  actionType        IncidentActionType
+  summary           String              @db.VarChar(500)
+  performedByUserId String?             @db.Uuid
+  performedAt       DateTime            @default(now())
+  metadata          Json?
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+  organization      Organization        @relation(fields: [organizationId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  incident          OperationalIncident @relation(fields: [incidentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  performedByUser   User?               @relation("IncidentActionPerformedByUser", fields: [performedByUserId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+
+  @@index([organizationId, actionType, performedAt])
+  @@index([incidentId, performedAt])
+  @@index([performedByUserId])
+  @@map("incident_actions")
+}
+
+model ResourceAssignment {
+  id                String                   @id @default(uuid()) @db.Uuid
+  organizationId    String                   @db.Uuid
+  assignmentType    AssignmentType
+  status            ResourceAssignmentStatus @default(PLANNED)
+  workforceMemberId String?                  @db.Uuid
+  assetId           String?                  @db.Uuid
+  shiftId           String?                  @db.Uuid
+  workOrderId       String?                  @db.Uuid
+  zoneId            String?                  @db.Uuid
+  assignedByUserId  String?                  @db.Uuid
+  assignedAt        DateTime                 @default(now())
+  releasedAt        DateTime?
+  metadata          Json?
+  createdAt         DateTime                 @default(now())
+  updatedAt         DateTime                 @updatedAt
+  organization      Organization             @relation(fields: [organizationId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  workforceMember   WorkforceMember?         @relation(fields: [workforceMemberId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  asset             Asset?                   @relation(fields: [assetId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  shift             ScheduleShift?           @relation(fields: [shiftId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  workOrder         WorkOrder?               @relation(fields: [workOrderId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  zone              OperationalZone?         @relation(fields: [zoneId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  assignedByUser    User?                    @relation("ResourceAssignmentAssignedByUser", fields: [assignedByUserId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+
+  @@index([organizationId, status, assignedAt])
+  @@index([organizationId, assignmentType, status])
+  @@index([workforceMemberId, status])
+  @@index([assetId, status])
+  @@index([shiftId, status])
+  @@index([workOrderId, status])
+  @@index([zoneId, status])
+  @@index([assignedByUserId])
+  @@map("resource_assignments")
+}

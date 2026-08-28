@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nexora-worker
+  namespace: nexora-platform
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nexora-worker
+  template:
+    metadata:
+      labels:
+        app: nexora-worker
+    spec:
+      containers:
+        - name: worker
+          image: ghcr.io/nexora/ai-ceo-worker:latest
+          envFrom:
+            - secretRef:
+                name: nexora-api-secrets

@@ -1,0 +1,158 @@
+import {
+  NotificationCategory,
+  NotificationSeverity,
+  WorkOrderPriority,
+  WorkOrderStatus,
+  WorkflowTaskStatus,
+} from '@prisma/client';
+
+import type { CompanySeedBlueprint } from '../shared/seed-helpers';
+
+export const CORE_UNIVERSAL_BLUEPRINT: CompanySeedBlueprint = {
+  packKey: 'CORE',
+  packNamespace: 'core-universal',
+  organization: {
+    name: 'Northstar Universal Platform',
+    slug: 'northstar-universal',
+  },
+  departments: [
+    {
+      code: 'ADM',
+      name: 'Administration',
+      description: 'Owns platform governance, access, and oversight.',
+    },
+    {
+      code: 'OPS',
+      name: 'Operations',
+      description: 'Coordinates day-to-day execution and service ownership.',
+    },
+    {
+      code: 'ANL',
+      name: 'Analytics',
+      description: 'Produces reporting, forecasting, and decision support.',
+    },
+  ],
+  positions: [
+    {
+      code: 'PLATFORM-ADMIN',
+      title: 'Platform Administrator',
+      departmentCode: 'ADM',
+      description: 'Owns tenant setup, security, and platform configuration.',
+      gradeLevel: 'Lead',
+    },
+    {
+      code: 'OPS-MGR',
+      title: 'Operations Manager',
+      departmentCode: 'OPS',
+      description: 'Coordinates team execution and approval workflows.',
+      gradeLevel: 'Manager',
+    },
+    {
+      code: 'OPS-OP',
+      title: 'Platform Operator',
+      departmentCode: 'OPS',
+      description: 'Executes work orders, monitoring, and follow-up actions.',
+      gradeLevel: 'Specialist',
+    },
+  ],
+  team: [
+    {
+      key: 'admin',
+      firstName: 'Amina',
+      lastName: 'Rahman',
+      email: 'admin@northstar-universal.demo',
+      phoneNumber: '+12025550100',
+      departmentCode: 'ADM',
+      positionCode: 'PLATFORM-ADMIN',
+      roleCodes: ['UNIVERSAL_ADMIN'],
+      engagementStartDate: new Date('2021-01-10T00:00:00.000Z'),
+      skills: ['tenant-governance', 'security-review'],
+    },
+    {
+      key: 'manager',
+      firstName: 'Daniel',
+      lastName: 'Kim',
+      email: 'manager@northstar-universal.demo',
+      phoneNumber: '+12025550101',
+      departmentCode: 'OPS',
+      positionCode: 'OPS-MGR',
+      roleCodes: ['TEAM_MANAGER'],
+      engagementStartDate: new Date('2022-03-14T00:00:00.000Z'),
+      skills: ['workflow-management', 'approval-routing'],
+    },
+    {
+      key: 'operator',
+      firstName: 'Lina',
+      lastName: 'Patel',
+      email: 'operator@northstar-universal.demo',
+      phoneNumber: '+12025550102',
+      departmentCode: 'OPS',
+      positionCode: 'OPS-OP',
+      roleCodes: ['PLATFORM_OPERATOR'],
+      engagementStartDate: new Date('2023-06-05T00:00:00.000Z'),
+      skills: ['task-execution', 'issue-escalation'],
+    },
+  ],
+  workflows: [
+    {
+      key: 'baseline-access-approval',
+      definitionCode: 'core.baseline-access-approval',
+      definitionName: 'Baseline Access Approval',
+      definitionDescription: 'Routes foundational platform access review for a new team member.',
+      moduleKey: 'core-governance',
+      entityType: 'access_request',
+      entityId: 'core-access-request-001',
+      createdByMemberKey: 'manager',
+      task: {
+        key: 'review-access',
+        title: 'Review baseline platform access',
+        description: 'Confirm least-privilege baseline platform access.',
+        status: WorkflowTaskStatus.COMPLETED,
+        assigneeMemberKey: 'admin',
+      },
+      approval: {
+        title: 'Approve baseline platform access',
+        description: 'Universal admin approval for baseline access.',
+        requestedByMemberKey: 'manager',
+        step: {
+          key: 'admin-approval',
+          title: 'Universal admin approval',
+          approverMemberKey: 'admin',
+          decisionType: 'APPROVE',
+          decisionComment: 'Approved for baseline demo environment access.',
+          status: 'APPROVED',
+        },
+        status: 'APPROVED',
+      },
+    },
+  ],
+  workOrders: [
+    {
+      code: 'CORE-WO-001',
+      title: 'Publish executive workspace baseline',
+      description: 'Prepare the baseline workspace artifacts and control views for the demo tenant.',
+      workType: 'BASELINE_SETUP',
+      status: WorkOrderStatus.READY,
+      priority: WorkOrderPriority.MEDIUM,
+      createdByMemberKey: 'manager',
+      sourceType: 'manual',
+      sourceId: 'core-seed',
+    },
+  ],
+  notifications: [
+    {
+      key: 'baseline-ready',
+      recipientMemberKey: 'admin',
+      category: NotificationCategory.SYSTEM,
+      severity: NotificationSeverity.INFO,
+      title: 'Core universal seed pack ready',
+      message: 'The baseline universal organization is seeded and ready for archetype packs.',
+      entityType: 'organization',
+      entityId: 'northstar-universal',
+    },
+  ],
+  enrichments: {
+    tenancy: 'core',
+    observability: 'core',
+  },
+};

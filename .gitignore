@@ -1,0 +1,26 @@
+node_modules
+dist
+.env
+.DS_Store
+coverage
+.turbo
+.next
+.nestjs-cli_cache
+
+# Environment secrets
+.env
+.env.local
+.env.*.local
+
+# Shopify local development state
+.shopify/
+apps/nexora/.shopify/
+
+# Dependencies / builds
+node_modules/
+dist/
+.next/
+
+# Next.js generated build artifacts
+.next-build/
+apps/web/.next-build/

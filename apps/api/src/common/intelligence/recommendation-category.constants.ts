@@ -1,0 +1,13 @@
+export const RecommendationCategory = {
+  people: 'people',
+  assets: 'assets',
+  operations: 'operations',
+  workflows: 'workflows',
+  approvals: 'approvals',
+  compliance: 'compliance',
+  executive: 'executive',
+  system: 'system',
+} as const;
+
+export type RecommendationCategoryValue =
+  (typeof RecommendationCategory)[keyof typeof RecommendationCategory];
