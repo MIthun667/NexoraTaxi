@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "bash ./scripts/dev-local.sh",
     "dev:stop": "bash ./scripts/dev-stop.sh",
-    "dev:setup": "pnpm dev:stop && pnpm prisma generate && npx prisma migrate deploy && npx prisma db push && pnpm db:seed && pnpm db:standardize-passwords",
+    "dev:setup": "pnpm dev:stop && pnpm prisma generate && npx prisma migrate deploy && pnpm db:seed && pnpm db:standardize-passwords",
     "dev:deps:up": "docker compose -f deploy/compose/development.yml up -d postgres redis",
     "dev:deps:down": "docker compose -f deploy/compose/development.yml stop postgres redis ollama",
     "dev:ai:up": "docker compose -f deploy/compose/development.yml up -d ollama",
@@ -33,8 +33,8 @@
     "db:standardize-passwords": "npx ts-node --transpile-only scripts/dev/tools/standardize-dev-password.ts",
     "db:backfill-universal": "npx ts-node --transpile-only scripts/migrations/manual/backfill-universal-operational-layer.ts",
     "test": "pnpm test:unit && pnpm test:integration",
-    "test:unit": "node --test -r ts-node/register -r tsconfig-paths/register apps/api/test/security/*.unit.test.ts",
-    "test:integration": "node --test -r ts-node/register -r tsconfig-paths/register apps/api/test/security/*.integration.test.ts",
+    "test:unit": "node --test -r ts-node/register -r tsconfig-paths/register apps/api/test/security/*.unit.test.ts apps/api/test/jobs/*.unit.test.ts",
+    "test:integration": "node --test -r ts-node/register -r tsconfig-paths/register apps/api/test/security/*.integration.test.ts apps/api/test/jobs/*.integration.test.ts",
     "test:ci": "pnpm test"
   },
   "prisma": {
