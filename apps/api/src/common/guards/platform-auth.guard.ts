@@ -12,7 +12,6 @@ import { Request } from 'express';
 import { TokenService } from '../../modules/auth/services/token.service';
 import { RbacService } from '../../modules/authz/rbac.service';
 import { IS_PUBLIC_KEY } from '../decorators/public.decorator';
-import { REQUIRED_PERMISSIONS_KEY } from '../decorators/permissions.decorator';
 
 @Injectable()
 export class PlatformAuthGuard implements CanActivate {
@@ -36,15 +35,6 @@ export class PlatformAuthGuard implements CanActivate {
     }
 
     const request = context.switchToHttp().getRequest<Request>();
-    const requiredPermissions =
-      this.reflector.getAllAndOverride<string[]>(REQUIRED_PERMISSIONS_KEY, [
-        context.getHandler(),
-        context.getClass(),
-      ]) ?? [];
-
-    if (requiredPermissions.length === 0) {
-      return true;
-    }
 
     if (request.principal) {
       return true;
@@ -53,40 +43,34 @@ export class PlatformAuthGuard implements CanActivate {
     const bearerToken = this.extractBearerToken(request);
 
     if (bearerToken) {
-      const payload = await this.tokenService.verifyAccessToken(bearerToken);
-      request.principal = await this.rbacService.resolvePrincipal({
-        userId: payload.userId,
-        email: payload.email,
-      });
-      return true;
+      try {
+        const payload = await this.tokenService.verifyAccessToken(bearerToken);
+        request.principal = await this.rbacService.resolvePrincipal({
+          userId: payload.userId,
+          email: payload.email,
+        });
+        return true;
+      } catch {
+        throw new UnauthorizedException('A valid access token is required to access this resource.');
+      }
     }
 
     const nodeEnv = this.configService.get<string>('environment.nodeEnv', 'development');
-    const devAuthUserEmail = this.configService.get<string>(
+    const devAuthUserEmail = this.configService.get<string | undefined>(
       'environment.devAuthUserEmail',
-      'admin@northstar-universal.demo',
     );
-    const userIdHeader = this.getHeaderValue(request, 'x-user-id');
-    const userEmailHeader = this.getHeaderValue(request, 'x-user-email');
-    const identifier = {
-      userId: userIdHeader,
-      email: userEmailHeader ?? (nodeEnv !== 'production' ? devAuthUserEmail : undefined),
-    };
 
-    if (!identifier.userId && !identifier.email) {
-      throw new UnauthorizedException(
-        'Authenticated principal is required to access this resource.',
-      );
-    }
-
-    if (!userIdHeader && !userEmailHeader && nodeEnv !== 'production') {
+    if (nodeEnv !== 'production' && devAuthUserEmail) {
       this.logger.debug(
-        `Using development principal fallback for ${request.method} ${request.url}: ${devAuthUserEmail}`,
+        `Using explicitly configured development principal for ${request.method} ${request.url}.`,
       );
+      request.principal = await this.rbacService.resolvePrincipal({ email: devAuthUserEmail });
+      return true;
     }
 
-    request.principal = await this.rbacService.resolvePrincipal(identifier);
-    return true;
+    throw new UnauthorizedException(
+      'Authenticated principal is required to access this resource.',
+    );
   }
 
   private getHeaderValue(request: Request, headerName: string): string | undefined {
@@ -106,9 +90,9 @@ export class PlatformAuthGuard implements CanActivate {
       return undefined;
     }
 
-    const [scheme, token] = authorizationHeader.split(' ');
+    const [scheme, token, ...extra] = authorizationHeader.split(' ');
 
-    if (scheme !== 'Bearer' || !token) {
+    if (scheme !== 'Bearer' || !token || extra.length > 0) {
       return undefined;
     }
 

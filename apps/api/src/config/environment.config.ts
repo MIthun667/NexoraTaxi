@@ -7,7 +7,7 @@ export interface EnvironmentConfiguration {
   authRateLimitLimit: number;
   authRateLimitTtl: number;
   corsOrigins: string[];
-  devAuthUserEmail: string;
+  devAuthUserEmail?: string;
   databaseUrl: string;
   jwtAccessExpires: string;
   jwtAccessSecret: string;
@@ -44,7 +44,7 @@ export default registerAs(
       .split(',')
       .map((origin) => origin.trim())
       .filter(Boolean),
-    devAuthUserEmail: process.env.DEV_AUTH_USER_EMAIL ?? 'admin@northstar-universal.demo',
+    devAuthUserEmail: process.env.DEV_AUTH_USER_EMAIL?.trim() || undefined,
     databaseUrl: process.env.DATABASE_URL ?? '',
     jwtAccessExpires: process.env.JWT_ACCESS_EXPIRES ?? '15m',
     jwtAccessSecret: process.env.JWT_ACCESS_SECRET ?? '',

@@ -5,7 +5,7 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 
 import { CurrentPrincipal } from '../../../common/interfaces/current-principal.interface';
 import { RbacService } from '../../authz/rbac.service';
-import { JwtTokenPayload } from '../interfaces/jwt-token-payload.interface';
+import { SignedJwtTokenPayload } from '../interfaces/jwt-token-payload.interface';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -20,7 +20,11 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  async validate(payload: JwtTokenPayload): Promise<CurrentPrincipal> {
+  async validate(payload: SignedJwtTokenPayload): Promise<CurrentPrincipal> {
+    if (payload.tokenType !== 'access') {
+      throw new UnauthorizedException('Authentication token has an invalid purpose.');
+    }
+
     try {
       return await this.rbacService.resolvePrincipal({
         userId: payload.userId,

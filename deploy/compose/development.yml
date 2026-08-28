@@ -48,6 +48,14 @@ services:
       DATABASE_URL: postgresql://postgres:postgres@postgres:5432/nexora_taxi?schema=public
       JWT_ACCESS_SECRET: dev-access-secret-please-change-1234567890
       JWT_REFRESH_SECRET: dev-refresh-secret-please-change-1234567890
+      ENCRYPTION_KEY: dev-encryption-key-please-change-1234567890
+      DEV_AUTH_USER_EMAIL: admin@northstar-universal.demo
+      SHOPIFY_API_KEY: dev-shopify-api-key
+      SHOPIFY_API_SECRET: dev-shopify-api-secret
+      SHOPIFY_SCOPES: read_orders,read_products,read_customers
+      SHOPIFY_REDIRECT_URI: http://localhost:3001/api/v1/integrations/shopify/callback
+      SHOPIFY_APP_URL: http://localhost:3001
+      SHOPIFY_WEBHOOK_BASE_URL: http://localhost:3001
       OLLAMA_BASE_URL: http://ollama:11434
       OLLAMA_MODEL: qwen2.5:7b-instruct
       RUN_MIGRATIONS_ON_BOOT: 'true'
@@ -68,6 +76,13 @@ services:
       DATABASE_URL: postgresql://postgres:postgres@postgres:5432/nexora_taxi?schema=public
       JWT_ACCESS_SECRET: dev-access-secret-please-change-1234567890
       JWT_REFRESH_SECRET: dev-refresh-secret-please-change-1234567890
+      ENCRYPTION_KEY: dev-encryption-key-please-change-1234567890
+      SHOPIFY_API_KEY: dev-shopify-api-key
+      SHOPIFY_API_SECRET: dev-shopify-api-secret
+      SHOPIFY_SCOPES: read_orders,read_products,read_customers
+      SHOPIFY_REDIRECT_URI: http://localhost:3001/api/v1/integrations/shopify/callback
+      SHOPIFY_APP_URL: http://localhost:3001
+      SHOPIFY_WEBHOOK_BASE_URL: http://localhost:3001
       OLLAMA_BASE_URL: http://ollama:11434
       OLLAMA_MODEL: qwen2.5:7b-instruct
 
@@ -99,6 +114,13 @@ services:
       DATABASE_URL: postgresql://postgres:postgres@postgres:5432/nexora_taxi?schema=public
       JWT_ACCESS_SECRET: dev-access-secret-please-change-1234567890
       JWT_REFRESH_SECRET: dev-refresh-secret-please-change-1234567890
+      ENCRYPTION_KEY: dev-encryption-key-please-change-1234567890
+      SHOPIFY_API_KEY: dev-shopify-api-key
+      SHOPIFY_API_SECRET: dev-shopify-api-secret
+      SHOPIFY_SCOPES: read_orders,read_products,read_customers
+      SHOPIFY_REDIRECT_URI: http://localhost:3001/api/v1/integrations/shopify/callback
+      SHOPIFY_APP_URL: http://localhost:3001
+      SHOPIFY_WEBHOOK_BASE_URL: http://localhost:3001
       OLLAMA_BASE_URL: http://ollama:11434
       OLLAMA_MODEL: qwen2.5:7b-instruct
     command: sh -lc "pnpm prisma migrate deploy && pnpm prisma db push && pnpm db:seed && pnpm db:standardize-passwords"

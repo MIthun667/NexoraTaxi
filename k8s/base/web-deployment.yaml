@@ -24,3 +24,5 @@ spec:
                 secretKeyRef:
                   name: nexora-web-secrets
                   key: NEXT_PUBLIC_API_BASE_URL
+            - name: API_PROXY_TARGET
+              value: http://nexora-api:3000

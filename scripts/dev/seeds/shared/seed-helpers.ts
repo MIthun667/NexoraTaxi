@@ -1,4 +1,7 @@
 import {
+  AssetAvailabilityStatus,
+  AssetComplianceStatus,
+  AssetOperationalStatus,
   AssetType,
   ApprovalDecisionType,
   ApprovalRequestStatus,
@@ -6,6 +9,7 @@ import {
   CredentialDocumentType,
   CredentialVerificationStatus,
   DepartmentStatus,
+  DomainActorType,
   EmploymentStatus,
   IncidentActionType,
   IncidentSeverity,
@@ -670,9 +674,9 @@ export const seedCompanyPack = async (
           name: asset.name,
           serialNumber: asset.serialNumber ?? null,
           registrationNumber: asset.registrationNumber ?? null,
-          operationalStatus: 'ACTIVE',
-          complianceStatus: 'COMPLIANT',
-          availabilityStatus: 'AVAILABLE',
+          operationalStatus: AssetOperationalStatus.ACTIVE,
+          complianceStatus: AssetComplianceStatus.COMPLIANT,
+          availabilityStatus: AssetAvailabilityStatus.AVAILABLE,
           zoneId: asset.zoneCode ? zoneIdByCode.get(asset.zoneCode) ?? null : null,
           specifications: jsonObject({ seeded: true, archetype: blueprint.packKey }),
           metadata: asset.metadata ?? jsonObject({ seeded: true, seedPack: blueprint.packKey }),
@@ -764,12 +768,12 @@ export const seedCompanyPack = async (
         taskId: deterministicPackUuid(blueprint.packNamespace, `workflow-task:${workflow.key}:${workflow.task.key}`),
         actionType: TaskActionType.COMPLETE,
         actionLabel: 'Complete',
-        actorUserId:
-          userIdByMemberKey.get(workflow.task.assigneeMemberKey ?? workflow.createdByMemberKey) ?? null,
+        actorUserId: userIdByMemberKey.get(
+          workflow.task.assigneeMemberKey ?? workflow.createdByMemberKey,
+        )!,
         comment: 'Seeded completed task action for demo traceability.',
         metadata: jsonObject({ seeded: true, seedPack: blueprint.packKey }),
-      }))
-      .filter((action): action is NonNullable<typeof action> => Boolean(action.actorUserId));
+      }));
 
     if (taskActionRows.length > 0) {
       await prisma.taskAction.createMany({ data: taskActionRows, skipDuplicates: true });
@@ -823,15 +827,13 @@ export const seedCompanyPack = async (
             blueprint.packNamespace,
             `approval-step:${workflow.key}:${workflow.approval!.step.key}`,
           ),
-          actorUserId:
-            userIdByMemberKey.get(
-              workflow.approval!.step.approverMemberKey ?? workflow.approval!.requestedByMemberKey,
-            ) ?? null,
+          actorUserId: userIdByMemberKey.get(
+            workflow.approval!.step.approverMemberKey ?? workflow.approval!.requestedByMemberKey,
+          )!,
           decisionType: workflow.approval!.step.decisionType!,
           comment: workflow.approval!.step.decisionComment ?? null,
           metadata: jsonObject({ seeded: true, seedPack: blueprint.packKey }),
-        }))
-        .filter((decision): decision is NonNullable<typeof decision> => Boolean(decision.actorUserId));
+        }));
 
       if (decisionRows.length > 0) {
         await prisma.approvalDecision.createMany({ data: decisionRows, skipDuplicates: true });
@@ -891,23 +893,19 @@ export const seedCompanyPack = async (
 
   const notificationRows =
     featureAvailability.notifications && blueprint.notifications
-      ? blueprint.notifications
-          .map((notification) => ({
-            id: deterministicPackUuid(blueprint.packNamespace, `notification:${notification.key}`),
-            organizationId,
-            recipientUserId: userIdByMemberKey.get(notification.recipientMemberKey) ?? null,
-            category: notification.category,
-            severity: notification.severity,
-            status: notification.status ?? NotificationStatus.UNREAD,
-            title: notification.title,
-            message: notification.message,
-            entityType: notification.entityType ?? null,
-            entityId: notification.entityId ?? null,
-            metadata: jsonObject({ seeded: true, seedPack: blueprint.packKey }),
-          }))
-          .filter((notification): notification is NonNullable<typeof notification> =>
-            Boolean(notification.recipientUserId),
-          )
+      ? blueprint.notifications.map((notification) => ({
+          id: deterministicPackUuid(blueprint.packNamespace, `notification:${notification.key}`),
+          organizationId,
+          recipientUserId: userIdByMemberKey.get(notification.recipientMemberKey)!,
+          category: notification.category,
+          severity: notification.severity,
+          status: notification.status ?? NotificationStatus.UNREAD,
+          title: notification.title,
+          message: notification.message,
+          entityType: notification.entityType ?? null,
+          entityId: notification.entityId ?? null,
+          metadata: jsonObject({ seeded: true, seedPack: blueprint.packKey }),
+        }))
       : [];
   if (notificationRows.length > 0) {
     await prisma.notification.createMany({ data: notificationRows, skipDuplicates: true });
@@ -921,7 +919,7 @@ export const seedCompanyPack = async (
           eventType: event.eventType,
           aggregateType: event.aggregateType,
           aggregateId: event.aggregateId,
-          actorType: event.actorMemberKey ? 'USER' : null,
+          actorType: event.actorMemberKey ? DomainActorType.USER : null,
           actorId: event.actorMemberKey ? userIdByMemberKey.get(event.actorMemberKey) ?? null : null,
           sourceModule: event.sourceModule,
           payload: event.payload,

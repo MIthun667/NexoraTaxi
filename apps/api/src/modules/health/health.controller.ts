@@ -26,19 +26,16 @@ export class HealthController {
   }
 
   @Get('database')
-  @Public()
   getDatabaseHealth() {
     return this.healthService.getDatabaseHealth();
   }
 
   @Get('ai-runtime')
-  @Public()
   getAiRuntimeHealth() {
     return this.healthService.getAiRuntimeHealth();
   }
 
   @Get('connectors')
-  @Public()
   getConnectorsHealth() {
     return this.healthService.getConnectorsHealth();
   }
