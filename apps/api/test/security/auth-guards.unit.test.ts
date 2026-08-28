@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import test from 'node:test';
+import { test } from 'node:test';
 
 import { ConfigService } from '@nestjs/config';
 import { ExecutionContext, ForbiddenException, UnauthorizedException } from '@nestjs/common';
@@ -44,7 +44,7 @@ function createContext(
       getResponse: () => undefined,
       getNext: () => undefined,
     }),
-  } as ExecutionContext;
+  } as unknown as ExecutionContext;
 }
 
 function createAuthGuard(options: {
