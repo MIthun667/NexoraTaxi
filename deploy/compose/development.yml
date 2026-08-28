@@ -23,6 +23,11 @@ services:
       - '6379:6379'
     volumes:
       - redis_dev_data:/data
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 5s
+      timeout: 3s
+      retries: 10
 
   ollama:
     image: ollama/ollama:latest
@@ -40,12 +45,19 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+      redis:
+        condition: service_healthy
     environment:
       NODE_ENV: development
       PORT: 3000
       API_PREFIX: api/v1
       TRUST_PROXY: 'true'
       DATABASE_URL: postgresql://postgres:postgres@postgres:5432/nexora_taxi?schema=public
+      REDIS_URL: redis://redis:6379
+      JOB_QUEUE_PREFIX: nexora
+      JOB_DEFAULT_ATTEMPTS: 3
+      JOB_BACKOFF_MS: 1000
+      WORKER_CONCURRENCY: 5
       JWT_ACCESS_SECRET: dev-access-secret-please-change-1234567890
       JWT_REFRESH_SECRET: dev-refresh-secret-please-change-1234567890
       ENCRYPTION_KEY: dev-encryption-key-please-change-1234567890
@@ -71,9 +83,16 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+      redis:
+        condition: service_healthy
     environment:
       NODE_ENV: development
       DATABASE_URL: postgresql://postgres:postgres@postgres:5432/nexora_taxi?schema=public
+      REDIS_URL: redis://redis:6379
+      JOB_QUEUE_PREFIX: nexora
+      JOB_DEFAULT_ATTEMPTS: 3
+      JOB_BACKOFF_MS: 1000
+      WORKER_CONCURRENCY: 5
       JWT_ACCESS_SECRET: dev-access-secret-please-change-1234567890
       JWT_REFRESH_SECRET: dev-refresh-secret-please-change-1234567890
       ENCRYPTION_KEY: dev-encryption-key-please-change-1234567890
@@ -112,6 +131,8 @@ services:
     environment:
       NODE_ENV: development
       DATABASE_URL: postgresql://postgres:postgres@postgres:5432/nexora_taxi?schema=public
+      REDIS_URL: redis://redis:6379
+      JOB_QUEUE_PREFIX: nexora
       JWT_ACCESS_SECRET: dev-access-secret-please-change-1234567890
       JWT_REFRESH_SECRET: dev-refresh-secret-please-change-1234567890
       ENCRYPTION_KEY: dev-encryption-key-please-change-1234567890
@@ -123,7 +144,7 @@ services:
       SHOPIFY_WEBHOOK_BASE_URL: http://localhost:3001
       OLLAMA_BASE_URL: http://ollama:11434
       OLLAMA_MODEL: qwen2.5:7b-instruct
-    command: sh -lc "pnpm prisma migrate deploy && pnpm prisma db push && pnpm db:seed && pnpm db:standardize-passwords"
+    command: sh -lc "pnpm prisma migrate deploy && pnpm db:seed && pnpm db:standardize-passwords"
 
 volumes:
   postgres_dev_data:
