@@ -8,13 +8,17 @@ export const validationSchema = Joi.object({
   AUTH_RATE_LIMIT_TTL: Joi.number().integer().min(1).max(3600).default(60),
   CORS_ORIGINS: Joi.string().trim().default('http://localhost:3000,http://localhost:3001'),
   DATABASE_URL: Joi.string().uri({ scheme: ['postgresql', 'postgres'] }).required(),
-  DEV_AUTH_USER_EMAIL: Joi.string()
-    .email({ tlds: { allow: false } })
-    .default('admin@northstar-universal.demo'),
+  DEV_AUTH_USER_EMAIL: Joi.when('NODE_ENV', {
+    is: 'production',
+    then: Joi.forbidden(),
+    otherwise: Joi.string().email({ tlds: { allow: false } }).optional(),
+  }),
   JWT_ACCESS_EXPIRES: Joi.string().trim().default('15m'),
   JWT_ACCESS_SECRET: Joi.string().min(32).required(),
   JWT_REFRESH_EXPIRES: Joi.string().trim().default('7d'),
-  JWT_REFRESH_SECRET: Joi.string().min(32).required(),
+  JWT_REFRESH_SECRET: Joi.string().min(32).invalid(Joi.ref('JWT_ACCESS_SECRET')).required().messages({
+    'any.invalid': 'JWT_REFRESH_SECRET must be different from JWT_ACCESS_SECRET',
+  }),
   ENCRYPTION_KEY: Joi.string().min(32).required(),
   NODE_ENV: Joi.string()
     .valid('development', 'test', 'production')
