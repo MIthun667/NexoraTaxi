@@ -1,4 +1,4 @@
-import assert from 'node:assert/strict';
+import * as assert from 'node:assert/strict';
 import { test } from 'node:test';
 
 import { ConfigService } from '@nestjs/config';
@@ -59,16 +59,11 @@ function createService() {
 
 test('Shopify cross-tenant read is denied', async () => {
   const service = createService();
-
-  await assert.rejects(
-    service.getConnectionStatus(principal, 'org-b'),
-    ForbiddenException,
-  );
+  await assert.rejects(service.getConnectionStatus(principal, 'org-b'), ForbiddenException);
 });
 
 test('Shopify cross-tenant mutation is denied', async () => {
   const service = createService();
-
   await assert.rejects(
     service.connectOrganizationStore(principal, {
       organizationId: 'org-b',
@@ -81,7 +76,6 @@ test('Shopify cross-tenant mutation is denied', async () => {
 test('Shopify same-tenant read remains available', async () => {
   const service = createService();
   const response = await service.getConnectionStatus(principal, 'org-a');
-
   assert.equal(response.data.connected, false);
   assert.equal(response.data.syncCoverage, 'NONE');
 });
