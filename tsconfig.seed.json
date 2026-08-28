@@ -6,8 +6,5 @@
     "noEmit": true,
     "outDir": "./dist/seed-typecheck"
   },
-  "include": [
-    "prisma/seed.ts",
-    "scripts/dev/seeds/**/*.ts"
-  ]
+  "include": ["prisma/seed.ts"]
 }
